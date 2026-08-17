@@ -1,0 +1,163 @@
+@use '@angular/material' as mat;
+
+
+@include mat.elevation-classes();
+@include mat.app-background();
+
+$dach-verwaltung-theme: mat.define-theme((
+  color: (
+    theme-type: light,
+    primary: mat.$blue-palette,
+    tertiary: mat.$azure-palette,
+  )
+));
+
+$prim-color: mat.get-theme-color($dach-verwaltung-theme, primary, 50);
+$terit-color: mat.get-theme-color($dach-verwaltung-theme, tertiary, 50);
+
+:root {
+  --primary-color: #{$prim-color};
+  --tertiary-color: #{$terit-color};
+}
+
+@mixin primary-button {
+  background-color: var(--primary-color);
+  color: white;
+  border: 2px solid;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  cursor: pointer;
+
+  &:hover {
+    background-color:$prim-color;
+  }
+}
+
+html {
+  @include mat.all-component-themes($dach-verwaltung-theme);
+  height: 100%;
+  font-size: 1.2em;
+}
+
+body {
+  height: 100%;
+  
+  
+}
+
+
+.mat-mdc-list-item,
+.mat-mdc-list-item .mdc-list-item__ripple,
+.mat-mdc-list-item::before,
+.mat-mdc-list-item:hover,
+.mat-mdc-list-item:active,
+.mat-mdc-list-item:focus {
+  border-radius: 0 !important;
+}
+
+// Define the theme object.
+
+/*
+$dach-verwaltung-theme: mat.define-theme((
+  color: (
+    theme-type: light,
+    primary: mat.$azure-palette,
+    tertiary: mat.$blue-palette,
+  ),
+  density: (
+    scale: 0,
+  )
+));
+*/
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+
+/*
+:root {
+  @include mat.all-component-themes($dach-verwaltung-theme);
+}
+  */
+
+// Comment out the line below if you want to use the pre-defined typography utility classes.
+// For more information: https://material.angular.io/guide/typography#using-typography-styles-in-your-application.
+// @include mat.typography-hierarchy($dach-verwaltung-theme);
+
+// Comment out the line below if you want to use the deprecated `color` inputs.
+// @include mat.color-variants-backwards-compatibility($dach-verwaltung-theme);
+
+// Custom Theming for Angular Material
+// For more information: https://material.angular.io/guide/theming
+// Plus imports for other components in your app.
+
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// Be sure that you only ever include this mixin once!
+
+/*
+$dach-verwaltung-primary: mat-palette($mat-indigo);
+$dach-verwaltung-accent: mat-palette(mat.$pink-palette, A200, A100, A400);
+$dach-verwaltung-warn: mat-palette(mat.$red-palette);
+
+$dach-verwaltung-theme: mat-light-theme($dach-verwaltung-primary, $dach-verwaltung-accent);
+*/
+// Define the theme object.
+ /*$dach-verwaltung-theme: mat.define-theme((
+ color: (
+    theme-type: light,
+    primary: mat.$yellow-palette,
+    tertiary: mat.$blue-palette,
+  ),
+  density: (
+    scale: 0,
+  )
+));
+*/
+
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+/*
+:root {
+  @include mat.all-component-themes($dach-verwaltung-theme);
+}
+*/
+// Comment out the line below if you want to use the pre-defined typography utility classes.
+// For more information: https://material.angular.io/guide/typography#using-typography-styles-in-your-application.
+// @include mat.typography-hierarchy($dach-verwaltung-theme);
+
+// Comment out the line below if you want to use the deprecated `color` inputs.
+// @include mat.color-variants-backwards-compatibility($dach-verwaltung-theme);
+/* You can add global styles to this file, and also import other style files */
+//@use 'src/custom-theme.scss' as custom-theme;
+//@include mat.all-component-themes(custom-theme.$app-theme);
+
+
+/*
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+*//*
+.mat-mdc-snack-bar-container {
+    --mat-mdc-snack-bar-button-color: #ffffff;
+    --mdc-snackbar-supporting-text-color: #ffffff;
+  
+    &.snackbar-notification-error {
+      --mdc-snackbar-container-color: #f23a2f;
+    }
+  
+    &.snackbar-notification-success {
+      --mdc-snackbar-container-color: #38a53e;
+    }
+}
+
+.mat-progress-bar .mat-progress-bar-buffer {
+  background: #E4E8EB;
+}
+
+::ng-deep .mat-select-panel.omg {
+  background-color: green !important;
+}
+  
+  mat-mdc-form-field {
+    font-size: 56px;
+  }*/

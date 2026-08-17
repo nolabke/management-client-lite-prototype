@@ -1,0 +1,58 @@
+input:focus {
+    outline-style: none;
+    box-shadow: none; 
+}
+
+.table {
+    width: 100%;
+}
+
+.mat-form-field {
+    width: 90%;
+}
+
+.mat-column-ProjectNo{
+    max-width:10% !important;
+    min-width: 5% !important;
+    text-align: start;
+    justify-content: flex-start;
+}
+
+.mat-column-Zip{
+    max-width:10% !important;
+}
+
+.mat-column-Name {
+    max-width:35% !important;
+}
+
+.mat-column-Street {
+    max-width:25% !important;
+}
+
+.mat-column-EditBtn{
+ 
+    padding-left: 50px !important;
+    min-width: 5% !important;
+    max-width:10% !important;
+}
+
+.footer {
+    display: flex;
+    position: fixed;
+    align-items: stretch;
+    justify-content: flex-end;
+    bottom: 0;
+    width: 100%;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+::ng-deep .mat-column-ProjectNo .mat-colum-Name .mat-colum-Street .mat-form-field {
+    width: 10% !important;
+}
+
+.search-field {
+  width: 100%;
+  flex: 1 1 auto;
+}

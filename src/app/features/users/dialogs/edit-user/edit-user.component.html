@@ -1,0 +1,109 @@
+<div class="editUser">
+
+  <div class="m-24">
+
+    <mat-form-field class="w-full">
+      <mat-label>ID</mat-label>
+      <input 
+        matInput 
+        type="text"
+        [(ngModel)]="user.Id"
+        readonly>
+    </mat-form-field>
+
+
+    <mat-form-field class="w-full mb-4">
+      <mat-label>Benutzername</mat-label>
+      <input 
+        matInput 
+        type="text"
+        [(ngModel)]="user.UserName">
+    </mat-form-field>
+
+
+    <mat-form-field class="w-full mb-4">
+      <mat-label>Passwort</mat-label>
+      <input 
+        matInput 
+        type="password"
+        [(ngModel)]="user.Password">
+    </mat-form-field>
+
+
+    <mat-form-field class="w-full mb-4">
+      <mat-label>Vorname</mat-label>
+      <input 
+        matInput 
+        type="text"
+        [(ngModel)]="user.FirstName">
+    </mat-form-field>
+
+
+    <mat-form-field class="w-full mb-4">
+      <mat-label>Nachname</mat-label>
+      <input 
+        matInput 
+        type="text"
+        [(ngModel)]="user.LastName">
+    </mat-form-field>
+
+
+    <div class="mb-4">
+
+      <mat-checkbox 
+        color="primary"
+        [(ngModel)]="user.IsAdmin">
+        Administrator
+      </mat-checkbox>
+
+    </div>
+
+
+    <div class="mb-4">
+
+      <mat-checkbox
+        [(ngModel)]="user.IsDisabled">
+        Deaktiviert
+      </mat-checkbox>
+
+    </div>
+
+
+  </div>
+
+
+  <div class="footer">
+
+    <div class="py-4 mx-2" style="justify-self: start;">
+      <a 
+        class="mx-2 text-red-600 cursor-pointer"
+        (click)="deleteUser()">
+        Benutzer entfernen
+      </a>
+    </div>
+
+
+    <div id="buttons" class="py-4 mx-2">
+
+      <button
+        class="mx-2"
+        mat-stroked-button
+        routerLink="/management/user-list">
+        Abbrechen
+      </button>
+
+
+      <button
+        class="mx-2"
+        mat-flat-button
+        color="primary"
+        [disabled]="isUserInvalid"
+        (click)="updateUser()">
+        Speichern
+      </button>
+
+    </div>
+
+  </div>
+
+</div>

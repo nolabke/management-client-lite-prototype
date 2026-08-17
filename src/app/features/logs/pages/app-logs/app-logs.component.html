@@ -1,0 +1,44 @@
+<div class=" m-5 ">
+<mat-table [dataSource]="dataSource" matSort>
+
+    <ng-container matColumnDef="Id">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> ID </mat-header-cell>
+      <mat-cell *matCellDef="let logEntry"> {{logEntry.Id}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="Message">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Nachricht </mat-header-cell>
+        <mat-cell *matCellDef="let logEntry"> {{logEntry.Message}} </mat-cell>
+    </ng-container>
+    
+    <ng-container matColumnDef="Type">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Type </mat-header-cell>
+      <mat-cell *matCellDef="let logEntry"> {{logEntry.Type}} </mat-cell>
+    </ng-container>
+    
+    <ng-container matColumnDef="Date">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Date </mat-header-cell>
+      <mat-cell *matCellDef="let logEntry"> {{logEntry.Date | date:'dd.MM.yyyy HH:mm'}} </mat-cell>
+    </ng-container>
+  
+    <ng-container matColumnDef="User">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Benutzer </mat-header-cell>
+      <mat-cell *matCellDef="let logEntry"> {{logEntry.User}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="Controller">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Controller </mat-header-cell>
+      <mat-cell *matCellDef="let logEntry"> {{logEntry.Controller}} </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+  </mat-table>
+
+  <div class="footer">
+    <mat-paginator [pageSizeOptions]="[20, 30, 50, dataSource.data.length]"
+      showFirstLastButtons
+      aria-label="Select page of logs">
+    </mat-paginator>
+  </div>
+</div>

@@ -1,0 +1,63 @@
+input:focus {
+  outline-style: none;
+  box-shadow: none; 
+}
+
+.footer {
+  display: flex;
+  position: fixed;
+  align-items: stretch;
+  justify-content: flex-end;
+  bottom: 0;
+  width: 100%;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+
+/* Set lastName column width to 30% */
+.mat-column-FileName {
+  max-width:30% !important;
+  min-width: 30% !important;
+  text-align: start;
+  justify-content: flex-start;
+}
+.mat-column-ProjectNo{
+  max-width:5% !important;
+  min-width: 5% !important;
+  padding: 0 0 0 0;
+  margin: 0 0 0 0;
+}
+
+.mat-column-UploadDate{
+  max-width:15% !important;
+  min-width: 15% !important;
+}
+.mat-column-Name {
+  max-width:20% !important;
+  min-width: 20% !important;  
+}
+
+.mat-column-UserName{
+  max-width:10% !important;
+  min-width: 10% !important;
+}
+
+.mat-column-IsSynced{
+  max-width:15% !important;
+  min-width: 15% !important;
+}
+.mat-column-selectName {
+  max-width:10% !important;
+  min-width: 10% !important;  
+}
+
+::ng-deep .mat-column-FileName .mat-column-IsSynced .mat-column-Name .mat-column-ProjectNo .mat-column-select .mat-column-UserName .mat-column-UploadDate .mat-form-field {
+  padding: 0 0 0 0;
+  margin: 0 0 0 0;
+}
+
+.search-field {
+  width: 100%;
+  flex: 1 1 auto;
+}

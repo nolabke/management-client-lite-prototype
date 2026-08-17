@@ -1,0 +1,59 @@
+<mat-sidenav-container autosize>   
+    <mat-sidenav [autoFocus]="false" *ngIf="isUserLoggedIn" mode="over" [(opened)]="opened">
+        <mat-nav-list>
+            <a (click)="opened=!opened">
+                <mat-list-item class="no-hover" style="margin-bottom: 30px; margin-top: 10px;">
+                    <mat-icon matListItemIcon>menu</mat-icon> Dachdeckerei
+                </mat-list-item>
+            </a>       
+            
+            <mat-list-item routerLink="/" (click)="opened=!opened"><mat-icon matListItemIcon  >home</mat-icon>Startseite</mat-list-item>
+            <mat-list-item routerLink="/image-upload" (click)="opened=!opened" ><mat-icon matListItemIcon >upload_file</mat-icon>Fotos hochladen</mat-list-item>
+            <mat-list-item routerLink="/" (click)="opened=!opened"><mat-icon matListItemIcon >qr_code_2</mat-icon>QR-Code</mat-list-item>
+            <mat-nav-list *ngIf="isUserAdmin">
+                <mat-list-item disableRipple matRipple="false">Verwaltung</mat-list-item>
+                <mat-list-item routerLink="/baustellenverwaltung" (click)="opened=!opened"><mat-icon matListItemIcon >roofing</mat-icon>Baustellenverwaltung</mat-list-item>
+                <mat-list-item routerLink="/benutzerverwaltung" (click)="opened=!opened"><mat-icon matListItemIcon >manage_accounts</mat-icon>Benutzerverwaltung</mat-list-item>
+                <mat-list-item routerLink="/bilderverwaltung" (click)="opened=!opened"><mat-icon matListItemIcon >photo_library</mat-icon>Bilderverwaltung</mat-list-item>
+                <mat-list-item routerLink="/server-connection" (click)="opened=!opened"><mat-icon matListItemIcon >settings_application</mat-icon>Servereinstellungen</mat-list-item>
+                <mat-list-item routerLink="/ereignisse" (click)="opened=!opened"><mat-icon matListItemIcon >content_paste_search</mat-icon>Ereignisanzeige</mat-list-item>
+            </mat-nav-list>
+            <mat-list-item></mat-list-item>
+            <mat-list-item (click)="logout()"><mat-icon matListItemIcon >logout</mat-icon>Abmelden</mat-list-item>
+        </mat-nav-list>
+    </mat-sidenav>
+
+    <mat-sidenav-content>
+
+        <mat-toolbar style="background-color: #6581ce; color: white;">
+            <mat-toolbar-row>    
+                <button mat-icon-button (click)="opened=!opened">
+                    <mat-icon *ngIf="!isLoginOrServerconfigurationPage()">menu</mat-icon>
+                </button>
+            
+                <span *ngIf="!isLoginOrServerconfigurationPage()" class="pb-1">{{pageName}}</span>      
+                
+                <ng-container *ngIf="!!isServerAlive; else notConnected">
+                    <span routerLink="/server-connection" class="text-green-600 pe-4">
+                        <mat-icon class="text-green-600 pe-4">dns</mat-icon>
+                    </span>
+                </ng-container>
+                <ng-template #notConnected>
+                <span routerLink="/server-connection" class="text-red-600 pe-4">
+                        <mat-icon class="text-red-600 pe-4">dns</mat-icon>
+                </span>
+                </ng-template>
+            </mat-toolbar-row>     
+       
+        </mat-toolbar>
+        <mat-divider *ngIf="!isLoginOrServerconfigurationPage()" horizontal></mat-divider>
+        
+
+            <router-outlet></router-outlet> 
+    
+        
+    
+    </mat-sidenav-content>  
+ </mat-sidenav-container>
+
+

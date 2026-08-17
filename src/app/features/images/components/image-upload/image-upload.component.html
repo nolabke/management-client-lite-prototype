@@ -1,0 +1,85 @@
+<div class="">
+ <div>
+            <div class=" centered-elements">
+                <div class="p-4 ">
+                    <mat-form-field >
+                        <label >Baustellenummer</label>
+                        <input matInput type="text" [(ngModel)]="projectNo" />
+                    </mat-form-field>
+                </div>
+                
+                <div routerLink="/qrscanner" class="p-4 large-icon">
+                    <mat-icon >qr_code_scanner</mat-icon>                         
+                </div>
+            </div>
+            
+            <br/>
+            <div>
+                <mat-card *ngIf="currentProject?.Name !== ''" [(ngModel)]="currentProject">
+                    <mat-card-content>
+                        <div style="display: flex; align-items: center; justify-content: space-between;">
+                            <mat-card-subtitle>Baustelle</mat-card-subtitle>
+                            <!--<mat-checkbox color="success" [checked]="onProjectSelected(currentProject)"></mat-checkbox> -->
+                        </div>
+                        <mat-card-title>
+                                Nr. {{currentProject?.ProjectNo}}
+                                {{currentProject?.Name}} {{currentProject?.Street}}, {{currentProject?.Zip}} {{currentProject?.City}}
+                        </mat-card-title>   
+                    </mat-card-content>
+                    <mat-card-footer></mat-card-footer>
+                </mat-card>
+            </div>
+
+            <div>
+                <mat-card *ngIf="lastProject?.Name !== ''" [(ngModel)]="lastProject" >
+                    <mat-card-content >
+                        <div style="display: flex; align-items: center; justify-content: space-between;">
+                            <mat-card-subtitle>Letzte Baustelle</mat-card-subtitle>
+                            <!--<mat-checkbox [checked]="onProjectSelected(lastProject)"></mat-checkbox>    -->
+                        </div>
+                        <mat-card-title >Nr.: {{lastProject?.ProjectNo}}</mat-card-title> 
+                          {{lastProject?.Name}}, {{lastProject?.Street}}, {{lastProject?.Zip}} {{lastProject?.City}}
+                    </mat-card-content>
+                    <mat-card-footer></mat-card-footer>
+                </mat-card>
+            </div>
+            <br/>
+            
+            <div class="flex-column justify-center">
+                <ul>
+                    <li> </li>
+                    <li >  
+                        <mat-progress-bar *ngIf="isProgressbarActivated" color="primary"  mode="buffer" [value]="uploadProgress"></mat-progress-bar>
+                    </li>
+                    <li> </li>
+                </ul>     
+            </div>
+            
+            <br/>
+            <div class="mb-40">
+                <!--TODO: Remove additional info about last number of files that was picked -->  
+                <div  *ngFor="let image of imagesAsDataUrl; let i = index" >
+                    <div class="fileUploadContainer" appearance="fill">
+                        <img [src]="image" class="thumbnail p-2" alt="Image {{i}}"/>
+                        <button class="deleteButton" 
+                            matTooltip="Info about the action"
+                            (click)="removeImageFileFromList(i)">
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                    </div>
+                </div>
+            </div>
+ </div>
+        <div class="footer p-4">
+            <div><button mat-stroked-button > 
+                <input matInput type="file" id="fileInput" multiple formControlName="file" (change)="onFileSelected($event)" accept="image/jpeg, image/png"/>
+                <label for="fileInput" >Bilder auswählen</label> 
+            </button>
+            </div>
+            <div>
+                <button #uploadBtn mat-flat-button
+                    (click)="uploadImages()">Bilder hochladen</button>
+            </div>
+        </div>
+    
+</div>

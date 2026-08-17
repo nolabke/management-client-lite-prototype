@@ -1,0 +1,70 @@
+<div class="flex flex-col gap-2">
+  <mat-form-field class="w-full">
+    <label>Projektnummer</label>
+    <input matInput type="text" [(ngModel)]="project.ProjectNo"/>
+  </mat-form-field>
+
+  <mat-form-field class="mb-12 w-full">
+    <label>Kundenname</label>
+    <input matInput type="text" [(ngModel)]="project.Name" class="bg-white rounded border border-gray-300 w-60" />
+  </mat-form-field>
+
+  <mat-form-field class="mb-4 w-full">
+    <label>Strasse</label>
+    <input matInput type="text" [(ngModel)]="project.Street"
+      class="bg-white rounded border border-gray-300 w-40" />
+  </mat-form-field>
+
+  <mat-form-field class="mb-4 w-full">
+    <label>PLZ</label>
+    <input matInput type="text" [(ngModel)]="project.Zip"
+      class="bg-white rounded border border-gray-300 w-40" />
+  </mat-form-field>
+
+  <mat-form-field class="mb-4 w-full">
+    <label>Stadt</label>
+    <input matInput type="text" [(ngModel)]="project.City"
+      class="bg-white rounded border border-gray-300 w-40" />
+  </mat-form-field>
+
+  <!--
+      <mat-form-field>
+      <label >Projektzustand</label>
+      <p></p>
+      <mat-checkbox id="status" name="status" formControlName="projectStatus" [(ngModel)]="project.IsDisabled"></mat-checkbox>
+    </mat-form-field>
+  -->
+  
+  <!--TODO: Remove additional info about last number of files that was picked-->
+  <div formArrayName="Images">
+    <mat-list *ngFor="let image of project.Images; let i = index">
+
+      <mat-list-item>
+
+        <p> {{ image.Id }}. {{image && image.FileName ? image.FileName.substring(image.FileName.lastIndexOf('\\') + 1) :
+          ''}}
+          <button (click)="removeImageFileFromList(image.Id)">
+            <mat-icon class="text-red-600 pb-0 pt-1">
+              delete
+            </mat-icon>
+          </button>
+        </p>
+      </mat-list-item>
+    </mat-list>
+  </div>
+
+  </div>
+
+
+<div class="footer">
+  <div class="py-4 mx-2" style="justify-self: start;">
+    <a class="mx-20" ></a>
+    <a class="mx-2" routerLink="/baustellenverwaltung">Projekt entfernen</a>
+  </div>
+  <div id="buttons" class="py-4 mx-2">
+   
+      <button  class="mx-2" routerLink="/baustellenverwaltung" mat-stroked-button> Abbrechen </button>
+      <button  class="mx-2" routerLink="/baustellenverwaltung">Speichern</button>
+  
+  </div>
+  </div>

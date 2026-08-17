@@ -1,0 +1,68 @@
+<div class=" m-5 ">
+
+<mat-form-field class="search-field" color="primary">
+  <mat-label>Suche</mat-label>
+  <input matInput type="search" placeholder="_user.jpg" (input)="onSearchTermChange($event)" />
+  
+</mat-form-field>
+<button mat-flat-button color="primary" 
+          (click)="syncImages()">Synchroniziere
+</button>
+
+
+<mat-table [dataSource]="dataSource.data | searchFilter : searchTerm" matSort>
+
+    <ng-container matColumnDef="select" >
+      <mat-header-cell *matHeaderCellDef mat-sort-header> 
+        <mat-checkbox color="success"
+          (change)="toggleAllRows($event.checked)" 
+          [checked]="isAllSelected()" 
+          [indeterminate]="isIndeterminate()">
+        </mat-checkbox>
+      </mat-header-cell>
+      <mat-cell *matCellDef="let image">
+        <mat-checkbox [checked]="isRowSelected(image.Id)" (change)="selectionChanged(image)"></mat-checkbox>
+      </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="FileName">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Speicherort </mat-header-cell>
+      <mat-cell *matCellDef="let image"> {{image.FileName}} </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="ProjectNo">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Baust.-Nr. </mat-header-cell>
+        <mat-cell *matCellDef="let image"> {{image.Location?.ProjectNo}} </mat-cell>
+      </ng-container>
+
+    <ng-container matColumnDef="UploadDate">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Gespeichert am </mat-header-cell>
+        <mat-cell *matCellDef="let image"> {{image.UploadDate | date: 'dd.MM.yyyy HH:mm'}} </mat-cell>
+      </ng-container>
+  
+    <ng-container matColumnDef="UserName">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Mitarbeiter_in </mat-header-cell>
+      <mat-cell *matCellDef="let image"> {{image.User.Name}} </mat-cell>
+    </ng-container>
+  
+    <ng-container matColumnDef="Name">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Baustelle </mat-header-cell>
+      <mat-cell *matCellDef="let image"> {{image.Location?.Name}} </mat-cell>
+    </ng-container>
+ 
+    <ng-container matColumnDef="IsSynced">
+        <mat-header-cell *matHeaderCellDef> Synchroniziert </mat-header-cell>
+        <mat-cell *matCellDef="let image"> {{image.IsSynced ? 'Ja' : 'Nein' }} </mat-cell>
+      </ng-container>
+  
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    
+  </mat-table>
+
+  <div class="footer">
+    <mat-paginator [pageSizeOptions]="[20, 30, 50]"
+      showFirstLastButtons
+      aria-label="Select page of images">
+    </mat-paginator>
+  </div>
+
+</div>

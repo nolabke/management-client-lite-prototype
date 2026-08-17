@@ -1,0 +1,45 @@
+
+/* Set lastName column width to 30% */
+.mat-column-Message {
+    max-width:50% !important;
+    min-width: 45% !important;
+    text-align: start;
+    justify-content: flex-start;
+}
+.mat-column-Typ{
+    max-width:5% !important;
+    min-width: 5% !important;
+}
+
+.mat-column-Date{
+    max-width:15% !important;
+    min-width: 15% !important;
+}
+.mat-column-Controller {
+    max-width:25% !important;
+    min-width: 25% !important;  
+}
+
+.mat-column-User{
+    max-width:5% !important;
+    min-width: 5% !important;
+}
+
+
+::ng-deep .mat-column-Controller .mat-column-Date .mat-column-Message .mat-column-Typ .mat-column-User .mat-form-field {
+    padding: 0 0 0 0;
+    margin: 0 0 0 0;
+    white-space: normal;
+}
+
+.footer {
+    display: inline-flex;
+    position: fixed;
+    align-items: center;
+    justify-content: space-between;
+    background-color: invert(var(--primary-color));
+    bottom: 0;
+    width: 100%;
+    margin: 0;
+    box-sizing: border-box;
+}
