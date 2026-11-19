@@ -1,0 +1,60 @@
+.server-page {
+  padding: 40px 24px;
+  display: flex;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.server-card {
+  width: 100%;
+  max-width: 480px;
+  background: #fff;
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-sizing: border-box;
+}
+
+.server-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.server-header-icon {
+  font-size: 32px;
+  width: 32px;
+  height: 32px;
+  color: #6581ce;
+  flex-shrink: 0;
+}
+
+.server-header h2 {
+  margin: 0 0 2px;
+  font-size: 18px;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.87);
+}
+
+.server-subtitle {
+  margin: 0;
+  font-size: 13px;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.w-full {
+  width: 100%;
+}
+
+.server-error {
+  color: #b3261e;
+  font-size: 13px;
+  margin: 4px 0 12px;
+}
+
+.server-button {
+  margin-top: 8px;
+  height: 40px;
+}

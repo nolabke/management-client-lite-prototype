@@ -1,12 +1,6 @@
-.dialog {
-    display: grid;
-    margin: 24px;
-    justify-content: center;
-    
-}
-
-#buttons {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-
+/* mat-dialog-title/content/actions already handle layout and spacing per
+   Material's own dialog conventions - align="end" on mat-dialog-actions
+   right-aligns the buttons, replacing the previous ad-hoc grid layout. */
+mat-dialog-content {
+    padding-bottom: 8px;
 }

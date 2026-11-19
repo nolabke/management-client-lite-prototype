@@ -1,25 +1,30 @@
 
-<section class="text-gray-600 body-font items-center">
-    <div class="container px-5 py-24 mx-auto flex flex-wrap ">
-      <div class="lg:w-3/5 md:w-1/2 md:pr-16 lg:pr-0 pr-0">
-        <h2 class="title-font font-medium text-3xl text-gray-900">Willkommen</h2>
-        <p class="leading-relaxed mt-4">Dachdeckerei Mobile App</p>
-      </div>
-      <div class="lg:w-2/6 md:w-1/2 bg-gray-100 rounded-lg p-8 flex flex-col md:ml-auto w-full mt-10 md:mt-0">
-        <p class="leading-relaxed mt-4">Mit Dachdeckerei-Konto anmelden</p>
-        <div class="relative mb-4">
-          <label for="username" class="leading-7 text-sm text-gray-600">Name</label>
-          <input type="text" id="username" name="username" [(ngModel)]="loginDTO.username" class="w-full bg-white rounded border border-gray-300 focus:border-green-500 focus:ring-2 focus:ring-green-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
-        </div>
-        <div class="relative mb-4">
-          <label for="password" class="leading-7 text-sm text-gray-600">Passwort</label>
-          <input type="password" id="password" name="password"  [(ngModel)]="loginDTO.password" class="w-full bg-white rounded border border-gray-300 focus:border-green-500 focus:ring-2 focus:ring-green-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
-        </div>
-        <p class="text-xs text-gray-500 mt-3" [innerHtml]="errorMessage"></p>
-        <button class="text-white bg-green-500 border-0 py-2 px-8 focus:outline-none hover:bg-green-600 rounded text-lg" (click)="login()">Anmelden</button>
-      </div>
+<div class="login-page">
+  <div class="login-card">
+
+    <div class="login-header">
+      <mat-icon class="login-header-icon">roofing</mat-icon>
+      <h1>Willkommen</h1>
+      <p class="login-subtitle">Dachdeckerei Mobile App</p>
     </div>
 
-    
-  </section>
- 
+    <mat-divider></mat-divider>
+
+    <p class="login-hint">Mit Dachdeckerei-Konto anmelden</p>
+
+    <mat-form-field class="w-full">
+      <mat-label>Name</mat-label>
+      <input matInput type="text" id="username" name="username" [(ngModel)]="loginDTO.username" (keyup.enter)="login()">
+    </mat-form-field>
+
+    <mat-form-field class="w-full">
+      <mat-label>Passwort</mat-label>
+      <input matInput type="password" id="password" name="password" [(ngModel)]="loginDTO.password" (keyup.enter)="login()">
+    </mat-form-field>
+
+    <p class="login-error" *ngIf="errorMessage" [innerHtml]="errorMessage"></p>
+
+    <button mat-flat-button color="primary" class="login-button" (click)="login()">Anmelden</button>
+
+  </div>
+</div>

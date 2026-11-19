@@ -42,21 +42,33 @@ export class AddProjectComponent implements OnInit{
 
 
   ngOnInit(): void {
-    
-  }
-  
-  
-  addProject(){ 
 
-        
+  }
+
+  // Mirrors AddUserComponent/EditUserComponent's validation pattern so the
+  // Save button is consistently disabled until the required fields are filled.
+  get isProjectInvalid(): boolean {
+
+    return !this.project.ProjectNo ||
+           !this.project.Name ||
+           !this.project.Street ||
+           !this.project.Zip ||
+           !this.project.City;
+
+  }
+
+
+  addProject(){
+
+
     this.projectService.addProject(this.project).subscribe(
           {
             next: (response: HttpResponse<any>) => {
-            
+
               console.log(response.status);
               console.log(response);
               if(response.status === HttpStatusCode.Created){
-            
+
                 this.snackbar.open('Projekt erstellt', '', {
                   duration:3000,
                   panelClass:['snackbar-notification-success']
@@ -64,7 +76,7 @@ export class AddProjectComponent implements OnInit{
                 this.router.navigate(['/baustellenverwaltung']);
               }
             },
-            
+
             error: (error) => {
 
               if(error.status === 409){
@@ -74,11 +86,11 @@ export class AddProjectComponent implements OnInit{
               })
 
               }
-              
+
             }
         }
   );
 
   }
-  
+
 }

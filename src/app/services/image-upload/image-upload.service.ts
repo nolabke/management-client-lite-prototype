@@ -15,7 +15,7 @@ export class ImageUploadService {
   http: HttpClient = inject(HttpClient);
   storageManagementService: StorageManagementService = inject(StorageManagementService);
 
-  private readonly useMock = true;
+  private readonly useMock = false;
 
 
   constructor() { }

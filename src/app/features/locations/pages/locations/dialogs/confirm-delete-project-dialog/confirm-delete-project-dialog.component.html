@@ -1,13 +1,10 @@
-<div class="dialog">
-    <h2 mat-dialog-title>Projekt löschen</h2>
-    <mat-dialog-content>Bist du sicher, dass du das Projekt entfernen möchtest?'
+<h2 mat-dialog-title>Projekt löschen</h2>
 
-    </mat-dialog-content>
+<mat-dialog-content>
+  {{ data?.message || 'Bist du sicher, dass du dieses Projekt entfernen möchtest?' }}
+</mat-dialog-content>
 
-    <div id="buttons" class="py-4 mx-2">
-        <button mat-stroked-button class="py-4 mx-2" style="justify-self: left;" (click)="close()">Nein</button>
-        <button mat-flat-button class="py-4 mx-2" style="justify-self: right; background-color: crimson;"  (click)="deleteProject()">Ja</button>
-    </div>
-
-</div>
-
+<mat-dialog-actions align="end">
+  <button mat-stroked-button type="button" (click)="close()">Abbrechen</button>
+  <button mat-flat-button color="warn" type="button" (click)="deleteProject()">Löschen</button>
+</mat-dialog-actions>

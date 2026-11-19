@@ -1,28 +1,159 @@
 
-/* Set lastName column width to 30% */
+/* Same left/right breathing room around the table on every device and in
+   every table component - the page no longer relies on inconsistent
+   utility classes (m-2 elsewhere, m-5 here) that gave each table a
+   different, sometimes asymmetric amount of side margin. */
+.table-page-container {
+    padding-left: 16px;
+    padding-right: 16px;
+    box-sizing: border-box;
+}
+
+/* Table typography - Material 3 "Body Medium" (14px) on desktop and
+   tablet, one step down on phones so it stays legible without crowding.
+   Headers keep a medium weight so they read as headers, not data. */
+mat-header-cell {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+mat-cell {
+    font-size: 14px;
+    font-weight: 400;
+}
+
+@media (max-width: 600px) {
+    mat-header-cell {
+        font-size: 13px;
+    }
+
+    mat-cell {
+        font-size: 13px;
+    }
+}
+
+/* Desktop only: every column gets a fixed width instead of sizing to its
+   own content. mat-table lays out the header row and each data row as
+   separate, independent flex containers - there is no shared table-layout
+   algorithm like a real <table> has to keep a column's width consistent
+   between them. With "auto" widths, the header cell sizes itself to the
+   short label ("Type") while each data cell sizes itself to that row's
+   own (often differently long) value, so headers and data drift out of
+   alignment, and every column after a long value drifts further right
+   than the same column in a row with a short value. Giving every column
+   the same explicit width for both its header and its cells removes the
+   ambiguity - they can only ever agree on one width. Nachricht and
+   Controller absorb the rest of the row's width proportionally (2:1) so
+   the table still fills the available space. Tablet/phone keep the
+   separate proportional layout below, since wrapped text there needs room
+   to breathe. */
+@media (min-width: 1025px) {
+    mat-header-cell,
+    mat-cell {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .mat-column-Date {
+        flex: 0 0 150px;
+    }
+
+    .mat-column-Type {
+        flex: 0 0 110px;
+    }
+
+    .mat-column-Message {
+        flex: 2 1 0%;
+    }
+
+    .mat-column-Controller {
+        flex: 1 1 0%;
+    }
+
+    .mat-column-User {
+        flex: 0 0 130px;
+    }
+}
+
+/* Table cell content wraps to multiple lines on tablet and phone instead
+   of being clipped - the narrower columns there don't leave room for long
+   values on one line. Desktop keeps the single-line layout. */
+@media (max-width: 1024px) {
+    mat-header-row,
+    mat-row {
+        height: auto;
+        min-height: 48px;
+    }
+
+    mat-header-cell,
+    mat-cell {
+        white-space: normal;
+        overflow-wrap: break-word;
+        word-break: break-word;
+        padding-top: 8px;
+        padding-bottom: 8px;
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+
+    /* Id, Type, Date and Benutzer are short, space-free-enough values (a
+       number, "WARNING", a username) - the generic break-word rule above
+       would otherwise split them mid-value onto multiple lines when a
+       column ends up narrow, so they opt back into single-line text with
+       an ellipsis as a safety net instead. Date used to be excluded from
+       this list on the assumption that its "dd.MM.yyyy HH:mm" format
+       always has a safe wrap point at the space between date and time -
+       but at this column's fixed width even the date portion alone
+       ("18.08.2026") didn't fit, so it was breaking mid-number instead
+       ("18.08.20" / "26 02:09"), inflating every row in this table to
+       double height compared to the other tables. */
+    .mat-column-Id,
+    .mat-column-Type,
+    .mat-column-Date,
+    .mat-column-User {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* Same layout as the other tables: Type, Date and Benutzer don't need
+       an equal share of the row - give them just enough room for their
+       content and let Nachricht (and Controller) use the space that frees
+       up, instead of all five columns splitting the row evenly. Date is
+       wide enough for the full "18.08.2026 02:09" on one line - it was
+       previously 96px, too narrow even for the date portion alone. */
+    .mat-column-Type {
+        flex: 0 0 80px;
+    }
+
+    .mat-column-Date {
+        flex: 0 0 130px;
+    }
+
+    .mat-column-User {
+        flex: 0 0 96px;
+    }
+
+    /* Zero flex-basis (not "auto") - with "auto" each row's own Nachricht/
+       Controller content would set that row's base width, pushing the
+       other columns to a different start position per row and making the
+       columns look unevenly spaced instead of lined up in a grid. A 0%
+       basis makes growth purely proportional to the space left over after
+       the fixed-width columns, so every row computes the same column
+       boundaries regardless of its content. */
+    .mat-column-Message {
+        flex: 2 1 0%;
+    }
+
+    .mat-column-Controller {
+        flex: 1 1 0%;
+    }
+}
+
 .mat-column-Message {
-    max-width:50% !important;
-    min-width: 45% !important;
     text-align: start;
     justify-content: flex-start;
-}
-.mat-column-Typ{
-    max-width:5% !important;
-    min-width: 5% !important;
-}
-
-.mat-column-Date{
-    max-width:15% !important;
-    min-width: 15% !important;
-}
-.mat-column-Controller {
-    max-width:25% !important;
-    min-width: 25% !important;  
-}
-
-.mat-column-User{
-    max-width:5% !important;
-    min-width: 5% !important;
 }
 
 
@@ -32,14 +163,14 @@
     white-space: normal;
 }
 
-.footer {
-    display: inline-flex;
-    position: fixed;
-    align-items: center;
-    justify-content: space-between;
-    background-color: invert(var(--primary-color));
-    bottom: 0;
-    width: 100%;
-    margin: 0;
-    box-sizing: border-box;
+/* Paginator now sits above the table instead of pinned to the bottom of
+   the viewport, left-aligned instead of the default right-aligned
+   Material layout. */
+mat-paginator {
+    display: block;
+    margin-bottom: 8px;
+}
+
+mat-paginator ::ng-deep .mat-mdc-paginator-container {
+    justify-content: flex-start !important;
 }

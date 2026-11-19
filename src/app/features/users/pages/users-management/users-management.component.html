@@ -1,13 +1,18 @@
 
-<div class=" m-2 ">
+<div class=" m-2 table-page-container">
 
   <mat-form-field class="search-field" color="primary">
     <input matInput type="search" placeholder="Suche nach..." (input)="onSearchTermChange($event)"/>
-    
-    
+
+
   </mat-form-field>
 
-  <mat-table [dataSource]="dataSource.data | searchFilter : searchTerm" matSort>
+  <mat-paginator [pageSizeOptions]="[20, 30, 50, dataSource.data.length]"
+      showFirstLastButtons
+      aria-label="Select page of users">
+  </mat-paginator>
+
+  <mat-table [dataSource]="dataSource" matSort>
 
     <ng-container matColumnDef="Id">
       <mat-header-cell *matHeaderCellDef mat-sort-header> ID </mat-header-cell>
@@ -29,14 +34,30 @@
       <mat-cell *matCellDef="let user"> {{user.UserName}} </mat-cell>
     </ng-container>
 
+    <!-- Tablet/smartphone only: Vorname, Nachname and Benutzername merged
+         into one column, each value stacked on its own line. -->
+    <ng-container matColumnDef="Contact">
+      <mat-header-cell *matHeaderCellDef> Benutzer:in </mat-header-cell>
+      <mat-cell *matCellDef="let user">
+        <div class="contact-stack">
+          <span>{{user.FirstName}} {{user.LastName}}</span>
+          <span>{{user.UserName}}</span>
+        </div>
+      </mat-cell>
+    </ng-container>
+
     <ng-container matColumnDef="IsAdmin">
       <mat-header-cell *matHeaderCellDef mat-sort-header> Berechtigungen </mat-header-cell>
-      <mat-cell *matCellDef="let user"> {{user.IsAdmin ? 'Admin' : ''}} </mat-cell>
+      <mat-cell *matCellDef="let user" [title]="user.IsAdmin ? 'Admin' : 'Kein Admin'">
+        <mat-icon class="role-icon" [class.role-admin]="user.IsAdmin" [class.role-user]="!user.IsAdmin">
+          {{ user.IsAdmin ? 'verified_user' : 'person_outline' }}
+        </mat-icon>
+      </mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="IsDisabled">
       <mat-header-cell *matHeaderCellDef mat-sort-header> Gespärt </mat-header-cell>
-      <mat-cell *matCellDef="let user"> {{user.IsDisables ? 'Ja' : 'Nein'}} </mat-cell>
+      <mat-cell *matCellDef="let user"> {{user.IsDisabled ? 'Ja' : 'Nein'}} </mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="LastLogin">
@@ -45,14 +66,18 @@
     </ng-container>
 
     <ng-container matColumnDef="Actions">
-  <mat-header-cell *matHeaderCellDef></mat-header-cell>
+  <mat-header-cell *matHeaderCellDef style="display: flex; justify-content: flex-end;">
+    <button mat-flat-button routerLink="/add-user">
+      <mat-icon>add</mat-icon><span class="btn-label">Neuer Benutzer</span>
+    </button>
+  </mat-header-cell>
 
   <mat-cell *matCellDef="let user" style="display: flex; justify-content: flex-end;">
 
       <a routerLink="/edit-user"  [queryParams]="{user: user  | json }">
         <button mat-stroked-button color="primary">
 
-          <mat-icon >edit</mat-icon> Bearbeiten
+          <mat-icon >edit</mat-icon><span class="btn-label"> Bearbeiten</span>
         </button>
         </a>
 
@@ -62,12 +87,5 @@
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
     <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
   </mat-table>
-
-  <div class="footer">
-    <mat-paginator [pageSizeOptions]="[20, 30, 50, dataSource.data.length]"
-        showFirstLastButtons
-        aria-label="Select page of users">
-    </mat-paginator>
-  </div>
 </div>
 

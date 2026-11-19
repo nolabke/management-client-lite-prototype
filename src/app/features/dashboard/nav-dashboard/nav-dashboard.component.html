@@ -27,7 +27,7 @@
 
         <mat-toolbar style="background-color: #6581ce; color: white;">
             <mat-toolbar-row>    
-                <button mat-icon-button (click)="opened=!opened">
+                <button mat-icon-button [disableRipple]="true" (click)="opened=!opened">
                     <mat-icon *ngIf="!isLoginOrServerconfigurationPage()">menu</mat-icon>
                 </button>
             

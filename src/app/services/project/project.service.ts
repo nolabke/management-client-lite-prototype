@@ -10,7 +10,7 @@ import { StorageManagementService } from '../storage-management/storage-manageme
 })
 export class ProjectService {
 
-  private readonly useMock = true;
+  private readonly useMock = false;
 
   private http = inject(HttpClient);
   private storageManagementService = inject(StorageManagementService);

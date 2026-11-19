@@ -1,4 +1,5 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit, inject } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { MaterialModule } from '../../../../material/material.module';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule} from '@angular/forms';
@@ -14,7 +15,6 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { MatSortModule } from '@angular/material/sort';
 import { SharedService } from 'src/app/services/sharedservice/shared-service.service';;
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { VerwaltungService } from 'src/app/services/verwaltung/verwaltung.service';
@@ -25,12 +25,12 @@ import { Title } from '@angular/platform-browser';
 @Component({
     selector: 'app-image-upload',
     standalone: true,
-    imports: [MaterialModule, CommonModule, MatSelectModule,  MatCardModule, MatIconModule, MatProgressBarModule, FormsModule,
+    imports: [MaterialModule, CommonModule, MatSelectModule, MatIconModule, MatProgressBarModule, FormsModule,
         MatFormFieldModule, ReactiveFormsModule, MatInputModule, MatSortModule, RouterModule],
     templateUrl: './image-upload.component.html',
     styleUrl: './image-upload.component.scss'
 })
-export class ImageUploadComponent implements OnInit {
+export class ImageUploadComponent implements OnInit, OnDestroy {
   
   http: HttpClient = inject(HttpClient);
   
@@ -40,8 +40,6 @@ export class ImageUploadComponent implements OnInit {
   public uploadProgress: number = 0;
 
   router: Router = inject(Router);
-  
-  @ViewChild('uploadButton') uploadButton!: ElementRef;
 
   projectService : ProjectService = inject(ProjectService);
   imageUploadService: ImageUploadService = inject(ImageUploadService);
@@ -61,8 +59,6 @@ export class ImageUploadComponent implements OnInit {
   files : any[] = [];
   imagesAsDataUrl : string[] = [];
   projectNo: string = '';
-  currentProject: Project | null = new Project();
-  lastProject: Project | null = null;
 
 
 // TODO: Displaying images in list before loading - probably required Base64?
@@ -75,31 +71,25 @@ export class ImageUploadComponent implements OnInit {
     this.verwaltungService.updateData(this.pageTitle);
 
   }
- /*
-  ngOnDestroy(): void {
-    this.sharedServices.currentQrCodeValue.unsubscribe();
-  }
-    */
+  private qrCodeSubscription?: Subscription;
 
+  ngOnDestroy(): void {
+    // Without this, every visit to this page leaves behind another live
+    // subscriber to the (app-wide, never-completing) shared QR value - it
+    // adds up fast given this screen is meant to be revisited many times a
+    // day (scan next site's QR -> upload -> scan next site's QR -> ...).
+    this.qrCodeSubscription?.unsubscribe();
+  }
 
   //TODO: It could be good that the employer has a contact telephone numer to the client
   ngOnInit(): void {
-   
-    this.sharedServices.currentQrCodeValue.subscribe((projectQR: Project) => {
+
+    this.qrCodeSubscription = this.sharedServices.currentQrCodeValue.subscribe((projectQR: Project) => {
       this.projectFromQR = projectQR;
       this.projectNo = projectQR.ProjectNo;
-      this.currentProject = projectQR;
       this.cdr.detectChanges();
-    }); 
-
-    this.projectService.getLastLocation().subscribe({
-          next: (project: Project) => {
-            console.log("ööö "+project.ProjectNo  );
-            this.lastProject = project;
-            this.cdr.detectChanges();
-          }
-    })   
-  }  
+    });
+  }
   
   onFileSelected(event: any) {
 
@@ -128,133 +118,152 @@ export class ImageUploadComponent implements OnInit {
   }
 
   public convertFileToDataUrl(file : File){
-    
+
     if(file){
       const reader = new FileReader();
-      reader.onload = () => { 
+      reader.onload = () => {
         this.imagesAsDataUrl.push(reader.result as string);
+        // FileReader's onload fires as a plain browser callback, outside
+        // any Angular-tracked event - without this the new thumbnail is in
+        // the array but never actually gets rendered.
+        this.cdr.detectChanges();
       }
       reader.readAsDataURL(file);
     }
   }
   
 
-  public getProjectByProjectNo(/*project: Project*/){
-   // this.imagesToUpload.forEach(b => console.log(b.type));
-    // Create APIImage
-    // Sollution with selection
-    /*
-    let pj = this.getSelectedOption() === null ? this.lastProjects[0] : this.getSelectedOption();
-    console.log("Project: "+ pj);
-    */
+  public getProjectByProjectNo(){
 
     this.projectService.getByProjectNo(this.projectNo).subscribe({
       next: (project: Project) => {
-        
-        this.uploadButton.nativeElement.IsDisabled = true;
-        
-        console.log("Test333");
-  
-       if(project?.ProjectNo !== null){
-        this.currentProject = project;
-        this.uploadImages();
-       }else{
+
+        if (project?.ProjectNo) {
+          this.projectFromQR = project;
+          this.performUpload(project);
+        } else {
           this.matSnackBar.open("Baustellenummer nicht gefunden", '', {
             duration: 6000,
             panelClass: ['snackbar-notification-error']
           });
         }
       },
-      error: (e : any) => {
-
-        //TODO: Why is it so slow?
+      error: (e: any) => {
         console.error('Error fetching project', e);
         this.matSnackBar.open("Baustelle nicht gefunden", '', {
           duration: 6000,
           panelClass: ['snackbar-notification-error']
         });
       }
-    }) 
-
+    });
   }
 
+  /** Two supported flows both land here, gated by the same checks:
+   *  1) the user picks photos first, then types in the Baustellennummer;
+   *  2) the user scans the QR code first (Baustellennummer + project are
+   *     already known), then adds photos from the phone/tablet.
+   *  Either way, nothing is sent until both a project number and at least
+   *  one file are present. */
   public uploadImages(){
 
+    if (this.files.length === 0) {
+      this.matSnackBar.open("Keine Dateien ausgewählt", '', {
+        duration: 6000,
+        panelClass: ['snackbar-notification-error']
+      });
+      return;
+    }
+
+    if (!this.projectNo) {
+      this.matSnackBar.open("Bitte Baustellennummer eingeben oder QR-Code scannen", '', {
+        duration: 6000,
+        panelClass: ['snackbar-notification-error']
+      });
+      return;
+    }
+
+    // Already resolved (typically via a QR scan) - upload straight away
+    // instead of looking the project up again.
+    if (this.projectFromQR?.ProjectNo === this.projectNo) {
+      this.performUpload(this.projectFromQR);
+      return;
+    }
+
+    // Manually typed number - resolve it first; performUpload() runs once
+    // the lookup succeeds.
     this.getProjectByProjectNo();
+  }
 
-    if(this.currentProject !== null){
-      //console.log("Project found: " + this.currentProject.ProjectNo, "decodedTextReceived: " + this.projectFromQR.ProjectNo);
+  private performUpload(project: Project){
 
-      this.files.forEach( (file: File) =>
-      { 
-        let apiImage : ApiImage = ApiImage.createApiImage(file.text.toString(), 'jpeg');
-        
-        console.log("APIImage " + apiImage.Format);
-        console.log("ApIImage File Name " + apiImage.Name);
-        
-        const blob = new Blob([file], { type: file.type });
-        console.log("Blob " + blob.size);
+    this.imagesToUpload = [];
 
-        apiImage.Blob = blob;
+    this.files.forEach((file: File, index: number) => {
 
-        this.imagesToUpload.push(apiImage);
-        
-      })
+      const dataUrl = this.imagesAsDataUrl[index] ?? '';
+      const base64 = dataUrl.includes(',') ? dataUrl.split(',')[1] : '';
+      const format = file.type?.split('/')[1] || 'jpeg';
 
-      if(this.imagesToUpload.length > 0){
-      
-        let formData = this.imageUploadService.formatRequest(this.imagesToUpload, this.currentProject);
-        console.log("Image upload");
-        console.log(this.currentProject);
-      
-        this.imageUploadService.uploadImages(formData, {
-          reportProgress: true,
-          observe: 'events'
-        }).subscribe({
-          next: (event: any) => {
-            if (event.type === HttpEventType.UploadProgress) {
-              this.isProgressbarActivated = true;
-              this.uploadProgress = 0;
-              const percentDone = Math.round(100 * event.loaded / event.total);
-              console.log(`Upload progress: ${percentDone}%`);
-              this.uploadProgress = percentDone;
-            } else if (event.status === 201 || (event.type === HttpEventType.Response)) {
-            
-                this.uploadProgress = 100;
-                this.isProgressbarActivated = false;
-                this.imagesToUpload.splice(0, this.imagesToUpload.length);
-                this.imagesAsDataUrl.splice(0, this.imagesAsDataUrl.length);
-                this.files.splice(0, this.files.length);
-                this.projectFromQR = new Project();
-                this.cdr.detectChanges();
-                this.matSnackBar.open("Dateien erfolgreich gesendet.", '', {
-                  duration:6000,
-                  panelClass:['snackbar-notification-success']
-                })  
-            }
-          },
-          error: (error) => {
-            this.matSnackBar.open("Dateien nicht kopiert.", '', {
-              duration:6000,
-              panelClass:['snackbar-notification-err']
-            })
-            
-          },
-          complete: () => {
-            this.matSnackBar.open("Dateien erfolgreich kopiert.", '', {
-              duration:3000,
-              panelClass:['snackbar-notification-success']
-            })            
-          }
-        });
-      }else{
-        this.matSnackBar.open("Keine Dateien ausgewählt", '', {
+      const apiImage: ApiImage = ApiImage.createApiImage(base64, format);
+      apiImage.Name = file.name;
+      apiImage.FileName = file.name;
+      apiImage.Blob = new Blob([file], { type: file.type });
+
+      this.imagesToUpload.push(apiImage);
+    });
+
+    if (this.imagesToUpload.length === 0) {
+      this.matSnackBar.open("Keine Dateien ausgewählt", '', {
+        duration: 6000,
+        panelClass: ['snackbar-notification-error']
+      });
+      return;
+    }
+
+    let formData = this.imageUploadService.formatRequest(this.imagesToUpload, project);
+
+    this.imageUploadService.uploadImages(formData, {
+      reportProgress: true,
+      observe: 'events'
+    }).subscribe({
+      next: (event: any) => {
+        // Only drives the progress bar while the upload is in flight. The
+        // actual "it worked" handling lives in complete() below, since that
+        // fires reliably both for the real backend (observe:'events'
+        // completes right after its final Response event) and for the mock
+        // service (whose canned event doesn't carry a matching status/type
+        // to check here).
+        if (event.type === HttpEventType.UploadProgress && event.total) {
+          this.isProgressbarActivated = true;
+          this.uploadProgress = Math.round(100 * event.loaded / event.total);
+        }
+      },
+      error: (error) => {
+        this.isProgressbarActivated = false;
+        this.matSnackBar.open("Dateien nicht kopiert.", '', {
           duration: 6000,
           panelClass: ['snackbar-notification-error']
         });
+      },
+      complete: () => {
+        this.uploadProgress = 100;
+        this.isProgressbarActivated = false;
+        this.imagesToUpload.splice(0, this.imagesToUpload.length);
+        this.imagesAsDataUrl.splice(0, this.imagesAsDataUrl.length);
+        this.files.splice(0, this.files.length);
+        this.projectFromQR = new Project();
+        this.cdr.detectChanges();
+        this.matSnackBar.open("Dateien erfolgreich gesendet.", '', {
+          duration: 6000,
+          panelClass: ['snackbar-notification-success']
+        });
       }
+    });
   }
-}
+
+  public get canUpload(): boolean {
+    return this.files.length > 0 && !!this.projectNo;
+  }
 
   public removeImageFileFromList(index : number){
     

@@ -1,10 +1,15 @@
-<div class=" m-2 p-2">
+<div class=" m-2 p-2 table-page-container">
 
   <mat-form-field class="search-field" color="primary">
     <input matInput type="search" placeholder="Suche nach..." (input)="onSearchTermChange($event)" />
   </mat-form-field>
-  
-  <mat-table [dataSource]="dataSource.data | searchFilter : searchTerm" matSort class="table">
+
+  <mat-paginator [pageSizeOptions]="[20, 30, 50, dataSource.data.length]"
+    showFirstLastButtons
+    aria-label="Select page of projects">
+  </mat-paginator>
+
+  <mat-table [dataSource]="dataSource" matSort class="table">
 <!--
     <ng-container matColumnDef="Id">
       <mat-header-cell *matHeaderCellDef mat-sort-header> ID </mat-header-cell>
@@ -12,7 +17,7 @@
     </ng-container>
 -->    
     <ng-container matColumnDef="ProjectNo">
-      <mat-header-cell *matHeaderCellDef mat-sort-header>Pr.-Nr.</mat-header-cell>
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Projekt</mat-header-cell>
       <mat-cell *matCellDef="let project"> {{project.ProjectNo}} </mat-cell>
     </ng-container>
   
@@ -36,23 +41,40 @@
       <mat-cell *matCellDef="let project"> {{project.Zip}} </mat-cell>
     </ng-container>
 
+    <!-- Tablet/smartphone only: Kunde, Adresse, PLZ and Stadt merged into
+         one column, shown on three lines (Kunde / Adresse / PLZ Stadt). -->
+    <ng-container matColumnDef="Location">
+      <mat-header-cell *matHeaderCellDef> Kunde </mat-header-cell>
+      <mat-cell *matCellDef="let project">
+        <div class="contact-stack">
+          <span>{{project.Name}}</span>
+          <span>{{project.Street}}</span>
+          <span>{{project.Zip}} {{project.City}}</span>
+        </div>
+      </mat-cell>
+    </ng-container>
+
     <ng-container matColumnDef="IsDisabled">
         <mat-header-cell *matHeaderCellDef mat-sort-header> Zustand </mat-header-cell>
-        <mat-cell *matCellDef="let project"> {{project.IsDisabled ? 'Abgeschlossen' : 'Nicht abgeschlossen' }} </mat-cell>
+        <mat-cell *matCellDef="let project" [title]="project.IsDisabled ? 'Abgeschlossen' : 'Nicht abgeschlossen'">
+          <mat-icon class="status-icon" [class.status-done]="project.IsDisabled" [class.status-progress]="!project.IsDisabled">
+            {{ project.IsDisabled ? 'check_circle' : 'hourglass_empty' }}
+          </mat-icon>
+        </mat-cell>
       </ng-container>
 
     <ng-container matColumnDef="editBtn">
       <mat-header-cell *matHeaderCellDef style="display: flex; justify-content: flex-end;">
         <button mat-flat-button routerLink="/add-project">
-          <mat-icon >add</mat-icon>Neue Baustelle
+          <mat-icon >add</mat-icon><span class="btn-label">Neue Baustelle</span>
         </button>
       </mat-header-cell>
       <mat-cell *matCellDef="let project" style="display: flex; justify-content: flex-end;">
         <a routerLink="/edit-project"
         [queryParams]="{project: project  | json }">
-        
+
         <button mat-stroked-button color="primary">
-          <mat-icon >edit</mat-icon> Bearbeiten
+          <mat-icon >edit</mat-icon><span class="btn-label"> Bearbeiten</span>
         </button>
           
         </a>
@@ -63,11 +85,4 @@
     <mat-row *matRowDef="let row; columns: displayedColumns;" ></mat-row>
     
   </mat-table>
-  
-  <div class="footer">
-    <mat-paginator [pageSizeOptions]="[20, 30, 50, dataSource.data.length]"
-      showFirstLastButtons
-      aria-label="Select page of projects">
-    </mat-paginator>
-  </div>
 </div>

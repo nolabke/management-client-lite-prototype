@@ -1,0 +1,40 @@
+<div class="dialog-page">
+
+  <mat-form-field>
+    <mat-label>Benutzername</mat-label>
+    <input matInput type="text" [(ngModel)]="user.UserName">
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Passwort</mat-label>
+    <input matInput type="password" [(ngModel)]="user.Password">
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Vorname</mat-label>
+    <input matInput type="text" [(ngModel)]="user.FirstName">
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Nachname</mat-label>
+    <input matInput type="text" [(ngModel)]="user.LastName">
+  </mat-form-field>
+
+  <div class="checkbox-row">
+    <mat-checkbox color="primary" [(ngModel)]="user.IsAdmin">Administrator</mat-checkbox>
+  </div>
+
+  <div class="checkbox-row">
+    <mat-checkbox [(ngModel)]="user.IsDisabled">Deaktiviert</mat-checkbox>
+  </div>
+
+</div>
+
+<div class="footer">
+  <div class="footer-danger"></div>
+
+  <div class="footer-actions">
+    <button mat-stroked-button type="button" routerLink="/benutzerverwaltung">Abbrechen</button>
+    <button mat-flat-button color="primary" type="button" [disabled]="isUserInvalid" (click)="addUser()">Speichern</button>
+  </div>
+</div>

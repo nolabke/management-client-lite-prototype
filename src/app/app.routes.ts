@@ -10,6 +10,7 @@ import { EditProjectComponent } from './features/locations/pages/locations/dialo
 import { QrscannerHtml5Component } from './features/qrscanner/components/qrscanner-html5/qrscanner-html5.component';
 import { AddProjectComponent } from './features/locations/pages/locations/dialogs/add-project/add-project.component';
 import { EditUserComponent } from './features/users/dialogs/edit-user/edit-user.component';
+import { AddUserComponent } from './features/users/dialogs/add-user/add-user.component';
 import { ServerConnectionComponent } from './features/server-connection/server-connection.component';
 export const routes: Routes = [
    
@@ -108,6 +109,14 @@ export const routes: Routes = [
                 //canActivate: [authGuard],
                 data:{
                     title: 'Benutzerbearbeitung'
+                }
+            },
+            {
+                path: 'add-user',
+                component : AddUserComponent,
+                //canActivate: [authGuard],
+                data:{
+                    title: 'Neuer Benutzer'
                 }
             },
         ]

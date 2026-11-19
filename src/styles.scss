@@ -41,8 +41,27 @@ html {
 
 body {
   height: 100%;
-  
-  
+}
+
+/* Plain white background on every page. The Material theme's default
+   "background"/"surface" system color is a barely-there off-white/pink
+   tint (#fef8fc for this theme), not pure white - that tint is what was
+   showing through as the pale background on every screen. Most of the
+   app's pages render inside <mat-sidenav-container>, whose background
+   reads --mat-sidenav-content-background-color, so that's overridden here
+   too; html/body cover pages outside the sidenav shell (e.g. the login
+   page). */
+:root,
+html {
+  --mat-sidenav-content-background-color: #fff;
+  --mat-sidenav-container-background-color: #fff;
+  --mat-table-background-color: #fff;
+  --mat-paginator-container-background-color: #fff;
+}
+
+html,
+body {
+  background-color: #fff;
 }
 
 

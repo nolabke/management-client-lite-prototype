@@ -1,0 +1,129 @@
+.qr-page {
+  padding: 24px 16px 40px;
+  display: flex;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.qr-card {
+  width: 100%;
+  max-width: 480px;
+  background: #fff;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-sizing: border-box;
+}
+
+.qr-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.qr-header-icon {
+  font-size: 32px;
+  width: 32px;
+  height: 32px;
+  color: #6581ce;
+  flex-shrink: 0;
+}
+
+.qr-header h2 {
+  margin: 0 0 2px;
+  font-size: 18px;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.87);
+}
+
+.qr-subtitle {
+  margin: 0;
+  font-size: 13px;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.qr-status {
+  margin: 0 0 16px;
+  font-size: 13px;
+  color: rgba(0, 0, 0, 0.7);
+  text-align: center;
+}
+
+.qr-status-error {
+  color: #b3261e;
+  font-weight: 500;
+}
+
+.qr-reader {
+  width: 100%;
+  margin: 0 auto 20px;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.qr-cancel-button {
+  width: 100%;
+}
+
+/* html5-qrcode injects its own dashboard/buttons/select directly into
+   #reader at runtime - that markup isn't part of Angular's template, so it
+   needs ::ng-deep to reach it. Without this the library's default desktop-
+   oriented chrome (fixed-ish button sizing, plain grey UI) tends to overflow
+   or look out of place on narrow phone/tablet screens. */
+::ng-deep .qr-reader {
+
+  video {
+    border-radius: 12px;
+    width: 100% !important;
+  }
+
+  select,
+  button {
+    width: 100%;
+    box-sizing: border-box;
+    max-width: 100%;
+  }
+
+  button {
+    margin: 6px 0 !important;
+    padding: 10px 16px !important;
+    border-radius: 20px !important;
+    border: none !important;
+    background-color: #6581ce !important;
+    color: #fff !important;
+    font-size: 14px !important;
+    cursor: pointer;
+  }
+
+  select {
+    margin: 6px 0 !important;
+    padding: 8px !important;
+    border-radius: 8px !important;
+    border: 1px solid rgba(0, 0, 0, 0.2) !important;
+  }
+
+  #reader__dashboard_section_csr > div {
+    text-align: center;
+  }
+
+  #reader__scan_region {
+    text-align: center;
+  }
+
+  #reader__scan_region img {
+    display: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .qr-page {
+    padding: 16px 12px 32px;
+  }
+
+  .qr-card {
+    padding: 16px;
+    border-radius: 12px;
+  }
+}

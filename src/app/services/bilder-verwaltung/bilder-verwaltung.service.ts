@@ -11,18 +11,23 @@ export class BilderVerwaltungService {
 
     http: HttpClient = inject(HttpClient);
     storageManagementService : StorageManagementService = inject(StorageManagementService);
-    private readonly useMock = true;
+    private readonly useMock = false;
 
     constructor() { }
 
-    
+
     public getUnsyncedImages(): Observable<ApiImage[]> {
 
         if (this.useMock) {
             return of(IMAGES_MOCK);
         }
 
-        return this.http.get<ApiImage[]>('/api/images/unsynced');
+        // Was missing the serverAddress prefix - a relative '/api/images/unsynced'
+        // would have hit the Angular app's own origin instead of the backend
+        // once useMock flipped to false, same pattern as syncImages() below.
+        let serverAddress = this.storageManagementService.getFromStorage('serverAddress');
+
+        return this.http.get<ApiImage[]>(serverAddress + '/api/images/unsynced');
     }
 
      public syncImages(imagesToSyncById : number[]): Observable<number[]> {

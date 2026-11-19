@@ -1,59 +1,37 @@
-<div class="addProject">
-  <div class="m-24">
+<div class="dialog-page">
 
-      <mat-form-field class="mb-4 w-full">
-        <label>Projektnummer</label>
-        <input matInput type="text" [(ngModel)]="project.ProjectNo" />
-      </mat-form-field>  
-      
-      <mat-form-field class="mb-4 w-full">
-        <label >Kundenname</label>
-        <input matInput type="text" [(ngModel)]="project.Name" 
-              class="bg-white rounded border border-gray-300 w-60" />
-      </mat-form-field>
+  <mat-form-field>
+    <mat-label>Projektnummer</mat-label>
+    <input matInput type="text" [(ngModel)]="project.ProjectNo" />
+  </mat-form-field>
 
-      <mat-form-field class="mb-4 w-full">
-        <label >Strasse</label>
-        <input matInput type="text" id="street" name="street" [(ngModel)]="project.Street" 
-            class="bg-white rounded border border-gray-300 w-40" />
-      </mat-form-field>
-        
-      <mat-form-field class="mb-4 w-full">
-        <label >PLZ</label>
-        <input matInput type="text" id="zip" name="zip" [(ngModel)]="project.Zip" 
-            class="bg-white rounded border border-gray-300 w-40"/>
-      </mat-form-field>
-        
-      <mat-form-field class="mb-4 w-full">
-        <label >Stadt</label>
-        <input matInput type="text" id="city" name="city" [(ngModel)]="project.City" 
-            class="bg-white rounded border border-gray-300 w-40"/>
-      </mat-form-field>
-  
-    <!--
-        <mat-form-field>
-        <label >Projektzustand</label>
-        <p></p>
-        <mat-checkbox id="status" name="status" formControlName="projectStatus" [(ngModel)]="project.IsDisabled"></mat-checkbox>
-      </mat-form-field>
-    -->
-    <p></p>
-        
-    
-    </div> 
+  <mat-form-field>
+    <mat-label>Kundenname</mat-label>
+    <input matInput type="text" [(ngModel)]="project.Name" />
+  </mat-form-field>
 
+  <mat-form-field>
+    <mat-label>Strasse</mat-label>
+    <input matInput type="text" id="street" name="street" [(ngModel)]="project.Street" />
+  </mat-form-field>
 
+  <mat-form-field>
+    <mat-label>PLZ</mat-label>
+    <input matInput type="text" id="zip" name="zip" [(ngModel)]="project.Zip" />
+  </mat-form-field>
 
-  <div class="footer">
+  <mat-form-field>
+    <mat-label>Stadt</mat-label>
+    <input matInput type="text" id="city" name="city" [(ngModel)]="project.City" />
+  </mat-form-field>
 
-    <div class="py-4 mx-2">
-      <p> </p>
-    </div>
+</div>
 
-    <div id="buttons">
-      <button mat-stroked-button class="shadow-s text-white bg-green-500 px-4 py-2 rounded hover:opacity-70 rounded ring ring-transparent m-1" routerLink="/baustellenverwaltung">Schliessen</button>
-      <button type="submit" mat-flat-button class="shadow-s text-white bg-green-500 px-4 py-2 rounded hover:opacity-70 rounded ring ring-transparent m-1" routerLink="/baustellenverwaltung">Speichern</button>
+<div class="footer">
+  <div class="footer-danger"></div>
 
-    </div> 
+  <div class="footer-actions">
+    <button mat-stroked-button type="button" routerLink="/baustellenverwaltung">Abbrechen</button>
+    <button mat-flat-button color="primary" type="button" [disabled]="isProjectInvalid" (click)="addProject()">Speichern</button>
   </div>
 </div>

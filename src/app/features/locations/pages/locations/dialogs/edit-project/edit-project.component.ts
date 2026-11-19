@@ -93,10 +93,22 @@ export class EditProjectComponent implements OnInit{
   }
 
   getProject() : Observable<Project>{
-   
+
     return this.projectService.getByProjectIdWithImages(this.project.Id);
   }
-  
+
+  // Mirrors AddUserComponent/EditUserComponent's validation pattern so the
+  // Save button is consistently disabled until the required fields are filled.
+  get isProjectInvalid(): boolean {
+
+    return !this.project.ProjectNo ||
+           !this.project.Name ||
+           !this.project.Street ||
+           !this.project.Zip ||
+           !this.project.City;
+
+  }
+
   updateProject(){
     
     this.projectService.updateProject(this.project).subscribe({
@@ -128,8 +140,8 @@ export class EditProjectComponent implements OnInit{
     console.log("Project id: " + this.project.Id);
 
     const dialogRef = this.dialog.open(ConfirmDeleteProjectDialogComponent, {
-      width: '250px',
-      data: { message: 'Bist du sicher, dass du das Projekt {{this.project.ProjectNo}} entfernen möchtest?' }
+      width: '320px',
+      data: { message: `Bist du sicher, dass du das Projekt ${this.project.ProjectNo} entfernen möchtest?` }
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -137,16 +149,20 @@ export class EditProjectComponent implements OnInit{
       if (result) {
         this.projectService.deleteProject(this.project.Id).subscribe({
 
-          next : (response) => {
-           
-            if (response === null) {
+          // The API responds with { status: 200, message: 'Project deleted' }
+          // on success (see src/routes/projects.js), never with `null` - the
+          // old `response === null` check could never be true, so the
+          // snackbar/navigate below never ran and the dialog was left open
+          // after a successful delete. Since deleteProject() only reaches
+          // `next` on success (errors go to the `error` callback below),
+          // there's nothing left to branch on here.
+          next : () => {
 
-              this.snackbar.open('Das Projekt wurde erfolgreich gelöscht', '', {  
-                duration:6000,
-              });
-              
-              this.router.navigate(['/baustellenverwaltung']);
-            }
+            this.snackbar.open('Das Projekt wurde erfolgreich gelöscht', '', {
+              duration:6000,
+            });
+
+            this.router.navigate(['/baustellenverwaltung']);
           },
           error: (error) => {
             console.log("Error");

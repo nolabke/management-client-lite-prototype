@@ -10,12 +10,15 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { CommonModule } from '@angular/common';
 import { VerwaltungService } from '../../../../services/verwaltung/verwaltung.service';
 import { Title } from '@angular/platform-browser';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatDividerModule } from '@angular/material/divider';
 
 
 
 @Component({
     selector: 'app-login',
-    imports: [FormsModule, MaterialModule, CommonModule],
+    imports: [FormsModule, MaterialModule, CommonModule, MatFormFieldModule, MatIconModule, MatDividerModule],
     templateUrl: './login.component.html',
     styleUrl: './login.component.scss',
     providers: [AuthenticationService, SafeHtmlPipe]

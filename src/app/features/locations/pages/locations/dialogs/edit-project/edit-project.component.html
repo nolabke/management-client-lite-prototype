@@ -1,70 +1,54 @@
-<div class="flex flex-col gap-2">
-  <mat-form-field class="w-full">
-    <label>Projektnummer</label>
+<div class="dialog-page">
+
+  <mat-form-field>
+    <mat-label>Projektnummer</mat-label>
     <input matInput type="text" [(ngModel)]="project.ProjectNo"/>
   </mat-form-field>
 
-  <mat-form-field class="mb-12 w-full">
-    <label>Kundenname</label>
-    <input matInput type="text" [(ngModel)]="project.Name" class="bg-white rounded border border-gray-300 w-60" />
+  <mat-form-field>
+    <mat-label>Kundenname</mat-label>
+    <input matInput type="text" [(ngModel)]="project.Name" />
   </mat-form-field>
 
-  <mat-form-field class="mb-4 w-full">
-    <label>Strasse</label>
-    <input matInput type="text" [(ngModel)]="project.Street"
-      class="bg-white rounded border border-gray-300 w-40" />
+  <mat-form-field>
+    <mat-label>Strasse</mat-label>
+    <input matInput type="text" [(ngModel)]="project.Street" />
   </mat-form-field>
 
-  <mat-form-field class="mb-4 w-full">
-    <label>PLZ</label>
-    <input matInput type="text" [(ngModel)]="project.Zip"
-      class="bg-white rounded border border-gray-300 w-40" />
+  <mat-form-field>
+    <mat-label>PLZ</mat-label>
+    <input matInput type="text" [(ngModel)]="project.Zip" />
   </mat-form-field>
 
-  <mat-form-field class="mb-4 w-full">
-    <label>Stadt</label>
-    <input matInput type="text" [(ngModel)]="project.City"
-      class="bg-white rounded border border-gray-300 w-40" />
+  <mat-form-field>
+    <mat-label>Stadt</mat-label>
+    <input matInput type="text" [(ngModel)]="project.City" />
   </mat-form-field>
 
-  <!--
-      <mat-form-field>
-      <label >Projektzustand</label>
-      <p></p>
-      <mat-checkbox id="status" name="status" formControlName="projectStatus" [(ngModel)]="project.IsDisabled"></mat-checkbox>
-    </mat-form-field>
-  -->
-  
   <!--TODO: Remove additional info about last number of files that was picked-->
-  <div formArrayName="Images">
-    <mat-list *ngFor="let image of project.Images; let i = index">
-
-      <mat-list-item>
-
-        <p> {{ image.Id }}. {{image && image.FileName ? image.FileName.substring(image.FileName.lastIndexOf('\\') + 1) :
-          ''}}
-          <button (click)="removeImageFileFromList(image.Id)">
-            <mat-icon class="text-red-600 pb-0 pt-1">
-              delete
-            </mat-icon>
-          </button>
-        </p>
+  <div *ngIf="project.Images?.length">
+    <mat-list>
+      <mat-list-item *ngFor="let image of project.Images">
+        {{ image.Id }}. {{image && image.FileName ? image.FileName.substring(image.FileName.lastIndexOf('\\') + 1) : ''}}
+        <button mat-icon-button (click)="removeImageFileFromList(image.Id)" aria-label="Bild entfernen">
+          <mat-icon class="danger-icon">delete</mat-icon>
+        </button>
       </mat-list-item>
     </mat-list>
   </div>
 
-  </div>
-
+</div>
 
 <div class="footer">
-  <div class="py-4 mx-2" style="justify-self: start;">
-    <a class="mx-20" ></a>
-    <a class="mx-2" routerLink="/baustellenverwaltung">Projekt entfernen</a>
+  <div class="footer-danger">
+    <button type="button" class="danger-link" (click)="deleteProject()">
+      <mat-icon>delete</mat-icon>
+      Projekt entfernen
+    </button>
   </div>
-  <div id="buttons" class="py-4 mx-2">
-   
-      <button  class="mx-2" routerLink="/baustellenverwaltung" mat-stroked-button> Abbrechen </button>
-      <button  class="mx-2" routerLink="/baustellenverwaltung">Speichern</button>
-  
+
+  <div class="footer-actions">
+    <button mat-stroked-button type="button" routerLink="/baustellenverwaltung">Abbrechen</button>
+    <button mat-flat-button color="primary" type="button" [disabled]="isProjectInvalid" (click)="updateProject()">Speichern</button>
   </div>
-  </div>
+</div>

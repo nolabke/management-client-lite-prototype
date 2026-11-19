@@ -1,0 +1,40 @@
+/* Shared dialog-page shell: centered, readable measure, extra bottom
+   padding so content never sits under the fixed footer bar. */
+.dialog-page {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 24px 24px 96px;
+}
+
+.dialog-page mat-form-field {
+    width: 100%;
+    margin-bottom: 8px;
+}
+
+.checkbox-row {
+    margin-bottom: 8px;
+}
+
+/* Shared fixed action bar: standard Material spacing/elevation instead of
+   the two different ad-hoc footers this dialog and its siblings used to
+   have (see Baustellenverwaltung dialogs). */
+.footer {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 12px 24px;
+    background: #fff;
+    border-top: 1px solid rgba(0, 0, 0, 0.12);
+    box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.06);
+    box-sizing: border-box;
+}
+
+.footer-actions {
+    display: flex;
+    gap: 8px;
+}

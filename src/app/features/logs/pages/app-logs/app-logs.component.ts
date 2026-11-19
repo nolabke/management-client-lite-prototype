@@ -10,7 +10,7 @@ import {MatRow} from '@angular/material/table';
 import { CommonModule } from '@angular/common';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
-import { MatSort } from '@angular/material/sort';
+import { MatSort, MatSortModule } from '@angular/material/sort';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { LOGS_MOCK } from 'src/app/mocks/logs.mock';
@@ -18,7 +18,7 @@ import { LOGS_MOCK } from 'src/app/mocks/logs.mock';
 @Component({
     selector: 'app-app-logs',
     standalone: true,
-    imports: [MaterialModule, CommonModule, MatPaginatorModule, MatTableModule, MatCell, MatHeaderCell, MatHeaderRow, MatRow],
+    imports: [MaterialModule, CommonModule, MatPaginatorModule, MatSortModule, MatTableModule, MatCell, MatHeaderCell, MatHeaderRow, MatRow],
     templateUrl: './app-logs.component.html',
     styleUrl: './app-logs.component.scss'
 })

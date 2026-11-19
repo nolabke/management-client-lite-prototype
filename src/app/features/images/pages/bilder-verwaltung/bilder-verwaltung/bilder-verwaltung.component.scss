@@ -1,63 +1,219 @@
-input:focus {
-  outline-style: none;
-  box-shadow: none; 
-}
-
-.footer {
-  display: flex;
-  position: fixed;
-  align-items: stretch;
-  justify-content: flex-end;
-  bottom: 0;
-  width: 100%;
-  margin: 0;
+/* Same left/right breathing room around the table on every device and in
+   every table component - the page no longer relies on inconsistent
+   utility classes (m-2 here, m-5 elsewhere) that gave each table a
+   different, sometimes asymmetric amount of side margin. */
+.table-page-container {
+  padding-left: 16px;
+  padding-right: 16px;
   box-sizing: border-box;
 }
 
+input:focus {
+  outline-style: none;
+  box-shadow: none;
+}
 
-/* Set lastName column width to 30% */
+/* Table typography - Material 3 "Body Medium" (14px) on desktop and
+   tablet, one step down on phones so it stays legible without crowding.
+   Headers keep a medium weight so they read as headers, not data. */
+mat-header-cell {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+mat-cell {
+  font-size: 14px;
+  font-weight: 400;
+}
+
+@media (max-width: 600px) {
+  mat-header-cell {
+    font-size: 13px;
+  }
+
+  mat-cell {
+    font-size: 13px;
+  }
+}
+
+/* Checkbox column - centered at every breakpoint, both header and row
+   cells. Used to also carry mat-sort-header (removed from the template),
+   which wrapped the checkbox in Material's sort-header container/content/
+   arrow markup meant for a text label + sort icon; that extra nesting (plus
+   the arrow's reserved space) was what made the checkbox look cramped and
+   off-center rather than a clean, centered control.
+   padding-left/right are also reset here - Angular Material gives the
+   table's *first* column an extra padding-left: 24px and the *last* column
+   an extra padding-right: 24px by default (a `:first-of-type`/
+   `:last-of-type` rule meant for text columns, so the row's edges get more
+   breathing room than the 16px between two ordinary columns). "select" is
+   the first column, so it was inheriting that 24px left-only padding,
+   which visibly pushed the checkbox off-center within its narrow 48-60px
+   column instead of centering it. Zeroing both sides here and letting
+   flex + justify-content:center do all the positioning is what actually
+   centers it. */
+.mat-column-select {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* Desktop only: every column gets a fixed width instead of sizing to its
+   own content. mat-table lays out the header row and each data row as
+   separate, independent flex containers - there is no shared table-layout
+   algorithm like a real <table> has to keep a column's width consistent
+   between them. With "auto" widths, the header cell sizes itself to the
+   short label ("Baust.-Nr.") while each data cell sizes itself to that
+   row's own (often differently long) value, so headers and data drift out
+   of alignment, and every column after a long value drifts further right
+   than the same column in a row with a short value. Giving every column
+   the same explicit width for both its header and its cells removes the
+   ambiguity - they can only ever agree on one width. Speicherort and
+   Baustelle absorb the rest of the row's width proportionally (2:1) so
+   the table still fills the available space. Tablet/phone keep the
+   separate proportional layout below, since wrapped text there needs room
+   to breathe. */
+@media (min-width: 1025px) {
+  mat-header-cell,
+  mat-cell {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Baustelle now holds two stacked lines (Baustellennummer + Baustelle
+     name, see .baustelle-cell below) instead of one - the nowrap/ellipsis
+     single-line treatment above would clip the second line, so this column
+     opts back out of it. Rows get an explicit min-height so the second
+     line has room instead of being squeezed into Material's default
+     single-line row height. */
+  .mat-column-Baustelle {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: unset;
+  }
+
+  mat-row {
+    height: auto;
+    min-height: 56px;
+  }
+
+  .mat-column-select {
+    flex: 0 0 60px;
+  }
+
+  .mat-column-FileName {
+    flex: 2 1 0%;
+  }
+
+  .mat-column-UploadDate {
+    flex: 0 0 170px;
+  }
+
+  .mat-column-UserName {
+    flex: 0 0 160px;
+  }
+
+  .mat-column-Baustelle {
+    flex: 1 1 0%;
+  }
+}
+
+/* Table cell content wraps to multiple lines on tablet and phone instead
+   of being clipped - the narrower columns there don't leave room for long
+   values on one line. Desktop keeps the single-line layout. */
+@media (max-width: 1024px) {
+  mat-header-row,
+  mat-row {
+    height: auto;
+    min-height: 48px;
+  }
+
+  mat-header-cell,
+  mat-cell {
+    white-space: normal;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  /* The checkbox doesn't need an equal share of the row - give it just
+     enough room for its content and let Speicherort use the space that
+     frees up. */
+  .mat-column-select {
+    flex: 0 0 48px;
+  }
+
+  /* Zero flex-basis (not "auto") - with "auto" each row's own FileName
+     content (short vs. long file name) would set that row's base width,
+     pushing the checkbox/status/edit columns to a different start position
+     per row and making the columns look unevenly spaced instead of lined
+     up in a grid. A 0% basis makes growth purely proportional to the space
+     left over after the fixed-width columns, so every row computes the
+     same column boundaries regardless of its content. */
+  .mat-column-FileName {
+    flex: 2 1 0%;
+  }
+}
+
+/* Paginator now sits above the table (below the search field) instead of
+   pinned to the bottom of the viewport, left-aligned instead of the
+   default right-aligned Material layout. */
+mat-paginator {
+  display: block;
+  margin-bottom: 8px;
+}
+
+mat-paginator ::ng-deep .mat-mdc-paginator-container {
+  justify-content: flex-start !important;
+}
+
+
 .mat-column-FileName {
-  max-width:30% !important;
-  min-width: 30% !important;
   text-align: start;
   justify-content: flex-start;
 }
-.mat-column-ProjectNo{
-  max-width:5% !important;
-  min-width: 5% !important;
-  padding: 0 0 0 0;
-  margin: 0 0 0 0;
+
+/* No unconditional padding/margin reset here anymore - it had no media
+   scope, so (same specificity, later in the cascade) it silently beat the
+   8px mobile padding set above and left ProjectNo flush against its
+   neighbours with none of the breathing room every other column gets, at
+   every screen width. Letting it inherit the standard padding keeps it
+   visually consistent with the rest of the row. (The old selector chain
+   also referenced .mat-column-IsSynced/.mat-column-Name/.mat-column-
+   ProjectNo, which no longer exist now that they're merged into
+   .mat-column-Baustelle - see the template.) */
+
+/* Baustellennummer on top (primary identifier), Baustelle name underneath
+   in a lighter, slightly smaller line - stacked instead of two separate
+   columns. Applies at every breakpoint. */
+.baustelle-cell {
+  display: flex;
+  flex-direction: column;
+  padding: 6px 0;
+  line-height: 1.3;
 }
 
-.mat-column-UploadDate{
-  max-width:15% !important;
-  min-width: 15% !important;
-}
-.mat-column-Name {
-  max-width:20% !important;
-  min-width: 20% !important;  
+.baustelle-nr {
+  font-weight: 500;
 }
 
-.mat-column-UserName{
-  max-width:10% !important;
-  min-width: 10% !important;
-}
-
-.mat-column-IsSynced{
-  max-width:15% !important;
-  min-width: 15% !important;
-}
-.mat-column-selectName {
-  max-width:10% !important;
-  min-width: 10% !important;  
-}
-
-::ng-deep .mat-column-FileName .mat-column-IsSynced .mat-column-Name .mat-column-ProjectNo .mat-column-select .mat-column-UserName .mat-column-UploadDate .mat-form-field {
-  padding: 0 0 0 0;
-  margin: 0 0 0 0;
+.baustelle-name {
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 0.92em;
 }
 
 .search-field {
   width: 100%;
   flex: 1 1 auto;
+  /* Material's default "fill" mat-form-field uses a light grey background -
+     white matches the page background instead. This CSS custom property is
+     read by Angular Material's own internal styles, so it works without
+     needing ::ng-deep to pierce into the component's DOM. */
+  --mat-form-field-filled-container-color: #fff;
 }

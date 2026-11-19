@@ -5,30 +5,61 @@ input[type="file"] {
 
 input:focus {
     outline-style: none;
-    box-shadow: none; 
+    box-shadow: none;
 }
 
 
 .thumbnail {
     width: 100%;
     height: 100%;
-    object-fit: contain;   
+    object-fit: contain;
 }
 
 .image-container {
     position: relative;
     display: flex;
-} 
+}
 
-.footer {
+// Responsive layout for the picked-files thumbnail preview:
+//  - smartphone (< 600px):            1 thumbnail per row (stacked)
+//  - tablet (600px - 1023px):         2 thumbnails per row
+//  - desktop (>= 1024px):             thumbnails flow side by side in a row,
+//                                      wrapping to fit as many as the
+//                                      available width allows
+//
+// Tracks are fixed at the thumbnail's own width (250px), not a flexible
+// 1fr/minmax(). With flexible tracks each column stretches to fill the row
+// and the (250px, centered-via-justify-items) box just floats in the middle
+// of that wide column - so `gap` only controlled a sliver of the visible
+// space between two thumbnails, and shrinking it barely showed. With fixed
+// 250px tracks the column *is* the thumbnail, so `gap` is the entire visible
+// space between them. auto-fit (not auto-fill) collapses any unused trailing
+// tracks instead of reserving blank space for them, so a short row (e.g. 2
+// images) doesn't get silently padded out to the right by phantom columns.
+.thumbnails-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+    justify-content: center;
+}
+
+@media (min-width: 600px) and (max-width: 1023px) {
+    .thumbnails-grid {
+        grid-template-columns: repeat(2, 250px);
+        gap: 14px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .thumbnails-grid {
+        grid-template-columns: repeat(auto-fit, 250px);
+    }
+}
+
+.thumbnail-item {
     display: flex;
-    position: fixed;
-    align-items: center;
-    justify-content: space-between;
-    bottom: 0;
+    justify-content: center;
     width: 100%;
-    margin: 0 0 0 0;
-    box-sizing: border-box;
 }
 
 .fileUploadContainer {
@@ -37,8 +68,8 @@ input:focus {
     padding-bottom: 35px;
     display: flex;
     flex-direction: row;
-    margin: 0 auto;
-    width: 250px;
+    width: 100%;
+    max-width: 250px;
     height: 250px;
     border: solid 1px #979797; //var(--primary-color);
     text-align: center;
@@ -47,7 +78,7 @@ input:focus {
     padding-right: 35px;
     background-color: white;
 }
-  
+
     img {
       margin-left: auto;
       margin-right: auto;
@@ -55,54 +86,105 @@ input:focus {
       max-width: 100%;
     }
 
-    .deleteButton{
+    // A small, round, always-legible "remove thumbnail" button that sits in
+    // the corner of the preview box. Kept as one fixed size everywhere
+    // (rather than a per-breakpoint size) because the box itself is capped
+    // at max-width: 250px on every device (see .fileUploadContainer above),
+    // so 40px hits a comfortable touch target (WCAG 2.5.5 wants >=44px CSS
+    // px, Material's own icon buttons target ~40-48px) without overwhelming
+    // the thumbnail on phones.
+    .deleteButton {
         position: absolute;
-        bottom: 10px;
-        right: 10px;
-        opacity:80%
-    }   
+        top: 8px;
+        right: 8px;
+        width: 40px;
+        height: 40px;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: none;
+        border-radius: 50%;
+        background-color: rgba(255, 255, 255, 0.9);
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+        color: #d32f2f;
+        cursor: pointer;
+        transition: background-color 0.15s ease, transform 0.1s ease;
 
-.large-icon { 
-    transform: scale(4);
-    padding-left: 25px;
-   
+        mat-icon {
+            font-size: 20px;
+            width: 20px;
+            height: 20px;
+            line-height: 20px;
+        }
+
+        &:hover,
+        &:focus-visible {
+            background-color: #fff;
+            transform: scale(1.06);
+        }
+
+        &:active {
+            transform: scale(0.94);
+        }
+    }
+
+.large-icon {
+    // Was `transform: scale(4)` on the wrapping div - transform is
+    // paint-only, so the div's actual layout box stayed the original
+    // ~24x24px while the icon visually rendered at ~96x96. Two problems:
+    // (1) flex centered the *layout* box, so the big visual icon threw off
+    // where the pair actually looked centered on the page, and (2) the
+    // clickable area (this div carries the routerLink to /qrscanner) was
+    // still only that tiny 24x24 box, even though the icon looked much
+    // bigger - most of the visible icon wasn't actually tappable. Sizing
+    // the icon itself (font-size/width/height) instead of transforming the
+    // wrapper makes the layout box match what's drawn, fixing both.
+    mat-icon {
+        font-size: 96px;
+        width: 96px;
+        height: 96px;
+    }
 }
 .centered-elements {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding-top: 20px;
-    padding-left: 20px;
+    // Was padding-top + padding-left only (no padding-right) - that made
+    // the available space for `justify-content: center` lopsided, so the
+    // Baustellennummer input + QR icon sat visibly off-center to the right.
+    // Symmetric left/right padding is what actually lets `justify-content:
+    // center` center the pair on the page. The spacing between the two
+    // items also moved here as a `gap` (was a one-sided padding-left on
+    // .large-icon), so the pair itself is symmetric too, not just the
+    // container around it.
+    gap: 24px;
+    padding: 20px 20px 0;
     width: 100%;
     box-sizing: border-box;
     overflow-x: hidden;
 }
 
-mat-card {
-    max-width: 400px;
-    margin: 0 auto;
-    padding: 0;
-    box-sizing: border-box;
-    background-color: white;
-    border: solid 1px #979797; //var(--primary-color);
-    text-align: left;
+// "Bilder auswählen" / "Bilder hochladen" - used to live in a
+// position:fixed footer pinned to the bottom of the viewport; now sits
+// right under the Baustellennummer/QR-code row instead, so it just needs to
+// be centered as a normal in-flow row.
+.upload-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
     justify-content: center;
-    position: relative;
-    padding: 35px;
-    background-color: white;
+    gap: 16px;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 8px 16px;
 }
 
-
-@media (max-width: 600px) {
-    button{
-        transform: scale(1, 1.2);
-        margin-left: 10px;
-        padding: 35px 25px;
-        border-radius: 0px;
-    }
-    .large-icon {
-        padding-left: 20px;
-    }
-  
-}
-
+// Note: this component used to have an `@media (max-width: 600px)` block
+// here with two phone-only overrides - a `button` stretch (removed above,
+// see the .upload-actions comment) and a `.large-icon { padding-left: 20px
+// }` bump. Both were one-sided/breakpoint-specific spacing hacks that made
+// things look different - or literally off-center - on a phone versus a
+// tablet/desktop. Now that spacing comes from a single `gap` on
+// .centered-elements and .upload-actions (applies at every width), neither
+// override is needed, so the whole block was removed rather than left empty.

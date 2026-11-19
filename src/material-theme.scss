@@ -17,6 +17,15 @@ html {
       density: 0,
     )
   );
+
+  // Plain white background everywhere, instead of the theme's default
+  // "surface" system color (a barely-there off-white/lavender tint). Most
+  // surfaces read their own dedicated background token rather than
+  // --mat-sys-surface directly, so each one needs its own override.
+  --mat-sidenav-content-background-color: #fff;
+  --mat-sidenav-container-background-color: #fff;
+  --mat-table-background-color: #fff;
+  --mat-paginator-container-background-color: #fff;
 }
 
 body {
@@ -25,10 +34,9 @@ body {
   // user's system settings.
   color-scheme: light;
 
-  // Set a default background, font and text colors for the application using
-  // Angular Material's system-level CSS variables. Learn more about these
-  // variables at https://material.angular.dev/guide/system-variables
-  background-color: var(--mat-sys-surface);
+  // Plain white page background (was var(--mat-sys-surface), the theme's
+  // tinted default).
+  background-color: #fff;
   color: var(--mat-sys-on-surface);
   font: var(--mat-sys-body-medium);
 

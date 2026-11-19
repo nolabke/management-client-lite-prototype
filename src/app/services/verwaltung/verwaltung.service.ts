@@ -13,7 +13,7 @@ export class VerwaltungService {
     private title = '';
     http: HttpClient = inject(HttpClient);
     storageManagementService : StorageManagementService = inject(StorageManagementService);
-    private readonly useMock = true;
+    private readonly useMock = false;
 
     private dataSubject  = new BehaviorSubject<string>('');
     data$ = this.dataSubject.asObservable();

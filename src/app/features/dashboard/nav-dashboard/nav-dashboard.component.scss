@@ -33,27 +33,82 @@ mat-list-item :hover {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-right: 12px;
-    padding-top: 16px;
-    padding-bottom: 10px;
-    padding-left: 25px;
-    font-size: 24px;
-    font-weight: bold;
+    /* Standard Material top-app-bar horizontal inset (16px each side)
+       instead of the previous uneven 25px/12px. */
+    padding: 0 16px;
+    /* Material 3 "Title Large" token: 22px, 500 (medium) weight, 28px
+       line-height - the standard size/weight for a top-app-bar title. */
+    font-size: 22px;
+    line-height: 28px;
+    font-weight: 500;
     background-color: var(--primary-color);
+}
+
+/* Guarantees breathing room around the title even when the row is tight,
+   and lets long page names truncate instead of wrapping or crowding the
+   menu/status icons. */
+.mat-toolbar-row > span {
+    margin: 0 12px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+}
+
+/* Both icons at the exact same explicit size, instead of relying on
+   whatever each one happened to inherit (the menu icon via the Material
+   icon-button, the server-status icon as a bare glyph). */
+.mat-toolbar-row mat-icon {
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+    line-height: 24px;
+}
+
+/* Belt-and-suspenders ripple suppression for the menu button, on top of
+   `[disableRipple]="true"` in the template: hides every ripple/state-layer
+   element Angular Material's MDC button has used across versions, plus any
+   dynamically-created ripple circle, so nothing animated can show even if
+   one of the class names below doesn't match this exact Material version. */
+::ng-deep .mat-toolbar-row button {
+    .mat-ripple,
+    .mat-mdc-button-ripple,
+    .mat-mdc-button-persistent-ripple,
+    .mdc-icon-button__ripple,
+    .mdc-icon-button__state-layer,
+    .mat-ripple-element {
+        display: none !important;
+    }
+}
+
+/* The menu icon sits centered inside a Material icon-button's own box.
+   The server-status icon had no such box, so it wasn't centered the same
+   way - giving it an identical, centered box makes the two line up as a
+   matched pair on either edge of the bar. */
+.mat-toolbar-row span.pe-4 {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
 }
 
 @media (max-width: 600px) {
     .mat-toolbar-row {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding-right: 0px;
-        padding-top: 10px;
-        padding-bottom: 5px;
-        padding-left: 5px;
-        font-size: 20px;
+        /* Material's compact top-app-bar inset. */
+        padding: 0 8px;
+        /* One step down so longer page names still fit next to the menu
+           and status icons on a narrow phone. */
+        font-size: 18px;
+        line-height: 24px;
     }
-    
+
+    .mat-toolbar-row > span {
+        margin: 0 8px;
+    }
 }
 
 ::ng-deep .mat-toolbar-row .mat-toolbar {

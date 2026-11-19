@@ -1,3 +1,20 @@
-<p>qrscanner-html5 works!</p>
-<div id="reader" width="600px"></div>
 
+<div class="qr-page">
+  <div class="qr-card">
+
+    <div class="qr-header">
+      <mat-icon class="qr-header-icon">qr_code_scanner</mat-icon>
+      <div>
+        <h2>QR-Code scannen</h2>
+        <p class="qr-subtitle">Baustellennummer per Kamera erfassen</p>
+      </div>
+    </div>
+
+    <p class="qr-status" [class.qr-status-error]="hasError">{{ statusMessage }}</p>
+
+    <div id="reader" class="qr-reader"></div>
+
+    <button mat-stroked-button class="qr-cancel-button" routerLink="/image-upload">Abbrechen</button>
+
+  </div>
+</div>
