@@ -5,10 +5,14 @@
   <input matInput type="search" placeholder="_user.jpg" (input)="onSearchTermChange($event)" />
   
 </mat-form-field>
-<button mat-flat-button color="primary" 
+<button mat-flat-button color="primary"
           (click)="syncImages()">Synchroniziere
 </button>
 
+<mat-paginator [pageSizeOptions]="[20, 30, 50]"
+  showFirstLastButtons
+  aria-label="Select page of images">
+</mat-paginator>
 
 <mat-table [dataSource]="dataSource" matSort>
 
@@ -61,12 +65,5 @@
     <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
     
   </mat-table>
-
-  <div class="footer">
-    <mat-paginator [pageSizeOptions]="[20, 30, 50]"
-      showFirstLastButtons
-      aria-label="Select page of images">
-    </mat-paginator>
-  </div>
 
 </div>

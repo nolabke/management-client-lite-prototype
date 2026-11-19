@@ -1,4 +1,10 @@
 <div class=" m-5 table-page-container">
+
+<mat-paginator [pageSizeOptions]="[20, 30, 50, dataSource.data.length]"
+  showFirstLastButtons
+  aria-label="Select page of logs">
+</mat-paginator>
+
 <mat-table [dataSource]="dataSource" matSort>
 
     <ng-container matColumnDef="Id">
@@ -35,10 +41,4 @@
     <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
   </mat-table>
 
-  <div class="footer">
-    <mat-paginator [pageSizeOptions]="[20, 30, 50, dataSource.data.length]"
-      showFirstLastButtons
-      aria-label="Select page of logs">
-    </mat-paginator>
-  </div>
 </div>

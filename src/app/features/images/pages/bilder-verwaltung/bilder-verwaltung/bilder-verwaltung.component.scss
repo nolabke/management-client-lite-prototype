@@ -161,16 +161,107 @@ mat-cell {
   }
 }
 
-/* Paginator now sits above the table (below the search field) instead of
-   pinned to the bottom of the viewport, left-aligned instead of the
-   default right-aligned Material layout. */
+/* Paginator sits above the table (below the search field) instead of
+   pinned to the bottom of the viewport, right-aligned to sit over the
+   table's own right edge.
+   The page-size select ("Items per page: [20]") used Material's default
+   sizing - an 84px-wide, 40px-tall form field with body-text sized at the
+   default scale - which looked oversized next to the compact paginator
+   text around it. These are Angular Material's own CSS custom properties,
+   read by its internal styles, so no ::ng-deep is needed to shrink them. */
 mat-paginator {
   display: block;
   margin-bottom: 8px;
+  --mat-paginator-container-text-size: 12px;
+  --mat-paginator-select-trigger-text-size: 12px;
+  --mat-paginator-page-size-select-width: 56px;
+  --mat-paginator-form-field-container-height: 32px;
+  --mat-paginator-form-field-container-vertical-padding: 4px;
 }
 
 mat-paginator ::ng-deep .mat-mdc-paginator-container {
-  justify-content: flex-start !important;
+  justify-content: flex-end !important;
+}
+
+/* Tablet/phone only: every part of the paginator shrinks together, on the
+   same max-width: 1024px breakpoint the rest of this component's
+   tablet/phone layout uses. Desktop keeps Material's defaults (set on the
+   base mat-paginator rule above).
+    - text ("Items per page:", the page-size value, "1 - 20 of 50"):
+      12px -> 8px, about a third smaller.
+    - the page-size select box itself: 56x32px -> 40x24px, since it only
+      needs to hold that smaller 8px text now.
+    - the whole paginator row's min-height: Material's 56px default -> 36px.
+    - the first/prev/next/last page icon buttons: Material's default 40px
+      button / 24px icon shrink to 28px / 16px. --mat-icon-button-* are
+      global Material tokens, but setting them here on mat-paginator only
+      affects icon-buttons nested inside it (CSS custom properties cascade
+      down the DOM), not icon-buttons elsewhere in the app.
+    - the nav icons' own SVG width is 28px, hardcoded by Material's
+      paginator styles rather than driven by --mat-icon-button-icon-size,
+      so it needs its own ::ng-deep override to actually shrink alongside
+      everything else. */
+@media (max-width: 1024px) {
+  mat-paginator {
+    --mat-paginator-container-text-size: 8px;
+    --mat-paginator-select-trigger-text-size: 8px;
+    --mat-paginator-page-size-select-width: 32px;
+    --mat-paginator-form-field-container-height: 20px;
+    --mat-paginator-form-field-container-vertical-padding: 0px;
+    --mat-paginator-container-size: 36px;
+    --mat-icon-button-state-layer-size: 28px;
+    --mat-icon-button-icon-size: 16px;
+  }
+
+  mat-paginator ::ng-deep .mat-mdc-paginator-icon {
+    width: 16px;
+  }
+
+  /* The page-size select uses Material's "outline" form-field appearance,
+     which reserves fixed padding that doesn't shrink with the select's own
+     width above:
+      - .mdc-text-field--outlined itself has a hard-coded min 16px
+        padding-left and 16px+ padding-right (32px combined) - by far the
+        biggest offender, since at a 36-40px total select width that alone
+        was almost the entire box.
+      - the rounded-corner outline segments (leading/trailing) reserve
+        another 12px each by default.
+     Together these left almost nothing for the actual "20" text, so the
+     element was mostly empty border/padding rather than a genuinely
+     smaller control. Shrinking both is what actually makes it read as
+     small. */
+  mat-paginator ::ng-deep .mat-mdc-paginator-page-size-select .mdc-text-field--outlined {
+    padding-left: 4px;
+    padding-right: 4px;
+  }
+
+  mat-paginator ::ng-deep .mat-mdc-paginator-page-size-select .mdc-notched-outline__leading,
+  mat-paginator ::ng-deep .mat-mdc-paginator-page-size-select .mdc-notched-outline__trailing {
+    width: 4px;
+  }
+
+  /* The gaps *between* the paginator's own pieces are separate from their
+     individual sizes above - Material hard-codes these as fixed margins
+     (not exposed as CSS custom properties), sized for the default 12px/
+     40px paginator. At the now much smaller mobile scale they read as
+     oversized empty space between "Items per page:", the select, the
+     "1 - 20 of 50" range text and the nav buttons, so they're tightened
+     here to match. */
+  mat-paginator ::ng-deep .mat-mdc-paginator-page-size-label {
+    margin: 0 1px;
+  }
+
+  mat-paginator ::ng-deep .mat-mdc-paginator-page-size-select {
+    margin: 0 1px;
+  }
+
+  mat-paginator ::ng-deep .mat-mdc-paginator-page-size {
+    margin-right: 2px;
+  }
+
+  mat-paginator ::ng-deep .mat-mdc-paginator-range-label {
+    margin: 0 4px;
+  }
 }
 
 
